@@ -4,7 +4,7 @@ const DatabaseReader = () => {
   const [shipList, setShipList] = useState(null);
   const [ship, setShip] = useState(null);
 
-  if (true) {
+  function getDB() {
     fetch(
       "https://raw.githubusercontent.com/AzurAPI/azurapi-js-setup/master/ships.json"
     )
@@ -36,7 +36,7 @@ const DatabaseReader = () => {
         }
       );
   }
-  return { shipList, ship };
+  return { shipList, ship, setShip, getDB };
 };
 
 export default DatabaseReader;

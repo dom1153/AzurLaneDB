@@ -42,14 +42,14 @@ function Gallery(ship, img, id) {
 }
 
 function Skin(ship, img, setSkin, id) {
-  function onClickHandler(s, c) {
-    setSkin(s, c);
+  function onClickHandler(s) {
+    setSkin(s);
   }
   return (
     <Box
       key={`${ship.names.en}_skin_${id}`}
       maxW="sm"
-      onClick={() => onClickHandler(img.image, img.chibi)}
+      onClick={() => onClickHandler(img)}
     >
       <Tooltip label={`${img.name}`}>
         <Image src={img.image} objectFit={"cover"} loading="lazy" />
@@ -87,13 +87,15 @@ function InfoCard({ header, body }) {
   );
 }
 
-function Portrait({ ship, skinP, chibi }) {
+function Portrait({ ship, skin }) {
   if (!ship) return <Text>Empty</Text>;
-  if (skinP == "") {
+  let skinP, chibi;
+  if (skin == "") {
     skinP = ship.skins[0].image;
-  }
-  if (chibi == "") {
     chibi = ship.skins[0].chibi;
+  } else {
+    skinP = skin.image;
+    chibi = skin.chibi;
   }
 
   return (
@@ -253,17 +255,12 @@ function InfoDump({ ship, setSkin }) {
 }
 
 export default function Details({ ship = null, children }) {
-  const [skinP, setSkinP] = useState("");
-  const [chibi, setChibi] = useState("");
-
-  function setSkin(skin, chibi) {
-    setSkinP(skin);
-    setChibi(chibi);
-  }
+  const [skin, setSkin] = useState("");
 
   useEffect(() => {
+    console.log("Details [ships] useEffect");
     if (ship) {
-      setSkin(ship.skins[0].image, ship.skins[0].chibi);
+      setSkin(ship.skins[0]);
     }
   }, [ship]);
 
@@ -273,10 +270,21 @@ export default function Details({ ship = null, children }) {
 
   return (
     <Box>
-      <Grid templateColumns={"repeat( 2, 1fr)"}>
-        <Portrait ship={ship} skinP={skinP} chibi={chibi} />
-        <InfoDump ship={ship} setSkin={setSkin} />
-      </Grid>
+      <Box
+        bgImage={`url('${skin.background}')`}
+        bgPosition="center"
+        bgRepeat="no-repeat"
+        bgClip={"unset"}
+        bgSize={"cover"}
+        height={"container.lg"}
+        backgroundAttachment={"fixed"}
+        overflow={"unset"}
+      >
+        <Grid templateColumns={"repeat( 2, 1fr)"}>
+          <Portrait ship={ship} skin={skin} />
+          <InfoDump ship={ship} setSkin={setSkin} />
+        </Grid>
+      </Box>
     </Box>
   );
 }

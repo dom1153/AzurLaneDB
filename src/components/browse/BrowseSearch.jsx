@@ -182,6 +182,7 @@ export default function BrowseSearch({ ships, setShip, children }) {
   }, []);
 
   useEffect(() => {
+    // console.log("BrowseSearch [ships] useEffect");
     if (ships) {
       ALL_VISIBLE = ships.map(() => CARD_DISPLAY);
     }

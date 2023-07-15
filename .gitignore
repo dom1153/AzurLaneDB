@@ -28,3 +28,6 @@ dist-ssr
 
 # experimental stuff that shouldn't be uploaded
 server
+
+# for local development
+*.code-workspace

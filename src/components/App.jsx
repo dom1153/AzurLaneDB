@@ -1,8 +1,7 @@
 // import ships from "../../db/ships.json";
 import DatabaseReader from "../logic/DatabaseReader";
-import Foo from "./Foo";
-import CenterDiv from "./CenterDiv";
-import Details from "./Details";
+import Foo from "./special/Foo";
+import Details from "./details/Details";
 import {
   HStack,
   Center,
@@ -16,26 +15,41 @@ import {
   AlertTitle,
   AlertDescription,
 } from "@chakra-ui/react";
-import BrowseSearch from "./BrowseSearch";
+import BrowseSearch from "./browse/BrowseSearch";
 import { useEffect, useState } from "react";
 
 // DEV CONFIG
 const isProd = () => import.meta.env.MODE == "production";
 const isDev = () => !isProd();
-const DEFAULT_INDEX = isProd() ? 0 : 2;
+const DEV_TAB_IDX = 1;
+const DEFAULT_TAB_INDEX = isProd() ? 0 : DEV_TAB_IDX;
 
 function App() {
-  useEffect(() => {}, []);
+  const { shipList, ship, setShip, getDB } = DatabaseReader();
+  const [tabIdx, setTabIdx] = useState(DEFAULT_TAB_INDEX);
 
-  const { shipList, ship } = DatabaseReader();
-  const [tabIdx, setTabIdx] = useState(DEFAULT_INDEX);
+  useEffect(() => {
+    getDB();
+  }, []);
   const handleTabsChange = (index) => {
     setTabIdx(index);
   };
   function handleSetSecretary(ship) {
+    console.log("pah", ship);
     setShip(ship);
     setTabIdx(1);
   }
+
+  useEffect(() => {
+    // console.log("main");
+  }, [ship]);
+
+  useEffect(() => {
+    console.log("tabIdx updated", tabIdx);
+  }, [tabIdx]);
+  // useEffect(() => {
+  //   console.log("main", shipList);
+  // }, [shipList]);
 
   return (
     <div className="App">
@@ -65,7 +79,7 @@ function App() {
       </HStack>
 
       <Center>
-        <Tabs index={tabIdx} onChange={handleTabsChange} maxW={"container.lg"}>
+        <Tabs index={tabIdx} onChange={handleTabsChange}>
           <Center>
             <TabList zIndex={1000} bg={"white"}>
               <Tab>Search</Tab>
@@ -75,12 +89,12 @@ function App() {
           </Center>
 
           <TabPanels>
-            <TabPanel>
-              <BrowseSearch ships={shipList} setShip={handleSetSecretary} />
+            <TabPanel maxW={"container.lg"}>
+              {true && (
+                <BrowseSearch ships={shipList} setShip={handleSetSecretary} />
+              )}
             </TabPanel>
-            <TabPanel>
-              <Details ship={ship} />
-            </TabPanel>
+            <TabPanel>{true && <Details ship={ship} />}</TabPanel>
             {isDev() && (
               <TabPanel>
                 <Foo />
