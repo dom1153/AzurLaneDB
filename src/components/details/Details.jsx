@@ -25,6 +25,7 @@ import {
   Box,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import * as AttrIcons from "../../assets/asset_index.js";
 
 function Gallery(ship, img, id) {
   return (
@@ -74,29 +75,60 @@ function Skill(ship, skill, id) {
   );
 }
 
-function InfoCard({ header, body }) {
-  return (
-    <Flex fontSize={"sm"}>
-      <Text bg={"black"} textColor={"white"} as="b" p={"2"}>
-        {header}
-      </Text>
-      <Text bg={"gray"} textColor={"white"} p={"2"}>
-        {body}
-      </Text>
-    </Flex>
-  );
+function InfoCard({ header, body, icon = null }) {
+  if (icon) {
+    return (
+      <>
+        <Flex fontSize={"sm"} bg={"red.100"}>
+          <Box bg={"black"} p={"2"}>
+            <Image src={icon} boxSize={"20px"} />
+          </Box>
+          <Flex
+            justifyContent={"space-between"}
+            bg={"gray"}
+            textColor={"white"}
+            p={"2"}
+            flex={"1"}
+          >
+            <Text as="b">{header}</Text>
+            <Text>{body}</Text>
+          </Flex>
+        </Flex>
+      </>
+    );
+  } else
+    return (
+      <Flex fontSize={"sm"}>
+        <Text bg={"black"} textColor={"white"} as="b" p={"2"}>
+          {header}
+        </Text>
+        <Text bg={"gray"} textColor={"white"} p={"2"}>
+          {body}
+        </Text>
+      </Flex>
+    );
 }
 
 function Portrait({ ship, skin }) {
   if (!ship) return <Text>Empty</Text>;
   let skinP, chibi;
+  let bg = null;
   if (skin == "") {
     skinP = ship.skins[0].image;
     chibi = ship.skins[0].chibi;
   } else {
-    skinP = skin.image;
+    // console.log(
+    //   "bg:",
+    //   skin.bg,
+    //   "\nnobg:",
+    //   skin.nobg,
+    //   "\nbackground",
+    //   skin.background
+    // );
+    skinP = skin.bg ? skin.bg : skin.image;
     chibi = skin.chibi;
   }
+  const experiment = false;
 
   return (
     <>
@@ -108,24 +140,19 @@ function Portrait({ ship, skin }) {
           top="0"
           loading="eager"
         />
-        {/* <Box
-          bgImage={`url('${skinP}')`}
-          bgPosition="left"
-          bgRepeat="no-repeat"
-          bgClip={"unset"}
-          height={"container.lg"}
-          backgroundAttachment={"fixed"}
-          overflow={"unset"}
-        /> */}
-        <Image
-          src={skinP}
-          objectFit={"none"}
-          overflow={"unset"}
-          // overflow={"cover"}
-          zIndex={"-1000"}
-          align={"center"}
-          loading="eager"
-        />
+        {experiment ? (
+          <Image
+            src={skinP}
+            objectFit={"none"}
+            overflow={"unset"}
+            // overflow={"cover"}
+            zIndex={"-1000"}
+            align={"center"}
+            loading="eager"
+          />
+        ) : (
+          <Image src={skinP} loading="eager" bgImage={bg && `url('${bg}')`} />
+        )}
       </Box>
     </>
   );
@@ -173,16 +200,28 @@ function StatDump({ ship }) {
     <>
       <Heading>Level 120</Heading>
       <Grid templateColumns={"repeat(3, 1fr)"} gap="6">
-        <InfoCard header="HP" body={stats.health} />
-        <InfoCard header="ARMOR" body={stats.armor} />
-        <InfoCard header="RL" body={stats.reload} />
-        <InfoCard header="FP" body={stats.firepower} />
-        <InfoCard header="TP" body={stats.torpedo} />
-        <InfoCard header="EV" body={stats.evasion} />
-        <InfoCard header="AA" body={stats.antiair} />
-        <InfoCard header="AV" body={stats.aviation} />
-        <InfoCard header="COST" body={stats.oilConsumption} />
-        <InfoCard header="ASW" body={stats.antisubmarineWarfare} />
+        <InfoCard header="HP" body={stats.health} icon={AttrIcons.attr_hp} />
+        <InfoCard
+          header="Armor"
+          body={stats.armor}
+          icon={AttrIcons.attr_armor}
+        />
+        <InfoCard header="RL" body={stats.reload} icon={AttrIcons.attr_rld} />
+        <InfoCard header="FP" body={stats.firepower} icon={AttrIcons.attr_fp} />
+        <InfoCard header="TP" body={stats.torpedo} icon={AttrIcons.attr_trp} />
+        <InfoCard header="EV" body={stats.evasion} icon={AttrIcons.attr_eva} />
+        <InfoCard header="AA" body={stats.antiair} icon={AttrIcons.attr_aa} />
+        <InfoCard header="AV" body={stats.aviation} icon={AttrIcons.attr_av} />
+        <InfoCard
+          header="Cost"
+          body={stats.oilConsumption}
+          icon={AttrIcons.attr_cost}
+        />
+        <InfoCard
+          header="ASW"
+          body={stats.antisubmarineWarfare}
+          icon={AttrIcons.attr_asw}
+        />
       </Grid>
     </>
   );
@@ -254,13 +293,48 @@ function InfoDump({ ship, setSkin }) {
   );
 }
 
+function parseShipDetails(ship) {
+  let level_background = AttrIcons.detail_bg_gray;
+  let rarity = ship.rarity.toLowerCase();
+  switch (rarity) {
+    case "common":
+      level_background = AttrIcons.detail_bg_gray;
+      break;
+    case "rare":
+      level_background = AttrIcons.detail_bg_blue;
+      break;
+    case "elite":
+      level_background = AttrIcons.detail_bg_purp;
+      break;
+    case "super rare":
+      level_background = AttrIcons.detail_bg_gold;
+      break;
+    case "priority":
+      level_background = AttrIcons.detail_bg_gold_pr;
+      break;
+    case "ultra rare":
+      level_background = AttrIcons.detail_bg_gay;
+      break;
+    case "decisive":
+      level_background = AttrIcons.detail_bg_gay_pr;
+      break;
+    default:
+      console.log("DEBUG: ship rarity not matched -> ", ship.rarity);
+      break;
+  }
+
+  return { level_background };
+}
+
 export default function Details({ ship = null, children }) {
   const [skin, setSkin] = useState("");
+  const [levelBg, setLevelBg] = useState(AttrIcons.detail_bg_gray);
 
   useEffect(() => {
-    console.log("Details [ships] useEffect");
     if (ship) {
       setSkin(ship.skins[0]);
+      let { level_background } = parseShipDetails(ship);
+      setLevelBg(level_background);
     }
   }, [ship]);
 
@@ -269,9 +343,9 @@ export default function Details({ ship = null, children }) {
   }
 
   return (
-    <Box>
+    <>
       <Box
-        bgImage={`url('${skin.background}')`}
+        bgImage={`url('${levelBg}')`}
         bgPosition="center"
         bgRepeat="no-repeat"
         bgClip={"unset"}
@@ -279,12 +353,13 @@ export default function Details({ ship = null, children }) {
         height={"container.lg"}
         backgroundAttachment={"fixed"}
         overflow={"unset"}
+        p={"2"}
       >
         <Grid templateColumns={"repeat( 2, 1fr)"}>
           <Portrait ship={ship} skin={skin} />
           <InfoDump ship={ship} setSkin={setSkin} />
         </Grid>
       </Box>
-    </Box>
+    </>
   );
 }

@@ -25,6 +25,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import * as Assets from "../../assets/asset_index";
 
 function ShipCard(ship, displayMode, setShip) {
   return (
@@ -207,22 +208,38 @@ export default function BrowseSearch({ ships, setShip, children }) {
 
   return (
     <>
-      <Stack>
-        <HStack>
-          <Input
-            placeholder="filter ship names"
-            margin={"sm"}
-            bg={"white"}
-            onChange={(e) => search(e.target.value)}
-          />
-          <FilterButton />
-        </HStack>
-        {/* TODO: dynamically set grid size */}
-        <Grid templateColumns={"repeat(6, 1fr)"} gap={6}>
-          {ships &&
-            ships.map((ship, i) => ShipCard(ship, shipGirls[i], setShip))}
-        </Grid>
-      </Stack>
+      <Box
+        bgImage={Assets.technology_bg}
+        bgPosition="center"
+        bgRepeat={"repeat"}
+        // bgRepeat="no-repeat"
+        // bgClip={"unset"}
+        // bgSize={"cover"}
+        bgSize={"contain"}
+        backgroundAttachment={"local, scroll"}
+        // overflow={"unset"}
+        w={"100vw"}
+        p={"2"}
+      >
+        <Center>
+          <Stack maxW={"container.lg"}>
+            <HStack>
+              <Input
+                placeholder="filter ship names"
+                margin={"sm"}
+                bg={"white"}
+                onChange={(e) => search(e.target.value)}
+              />
+              <FilterButton />
+            </HStack>
+            {/* TODO: dynamically set grid size */}
+            <Grid templateColumns={"repeat(6, 1fr)"} gap={6}>
+              {ships &&
+                ships.map((ship, i) => ShipCard(ship, shipGirls[i], setShip))}
+            </Grid>
+          </Stack>
+        </Center>
+      </Box>
     </>
   );
 }

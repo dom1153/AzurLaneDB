@@ -124,3 +124,69 @@ function DummyJSX() {
 
 // repeat( auto-fit, minmax(250px, 1fr) );
 // templateColumns="repeat(6, 1fr)"
+
+// https://github.com/vitejs/vite/discussions/12191
+const attrIcons = Object(
+  import.meta.glob("@assets/attricon/*.{png,jpg,jpeg,PNG,JPEG}", {
+    eager: true,
+    as: "url",
+  })
+);
+
+export {
+  IconAA,
+  attr_aa,
+  attr_armor,
+  attr_asw,
+  attr_av,
+  attr_cost,
+  attr_eva,
+  attr_fp,
+  attr_luck,
+  attr_rld,
+  attr_trp,
+};
+
+if (false) {
+} else if (Icon) {
+  return (
+    <>
+      <Flex fontSize={"sm"}>
+        <Box bg={"black"} p={"2"}>
+          <Icon boxSize={"20px"} />
+        </Box>
+        <Text bg={"gray"} textColor={"white"} p={"2"}>
+          {body}
+        </Text>
+      </Flex>
+    </>
+  );
+}
+
+const IconAA = (props) => <Image {...props} src={attr_aa} />;
+
+// VVV useless
+// tedious but worth it imo
+// export default {
+//   attr_aa: attr_aa,
+//   attr_armor: attr_armor,
+//   attr_asw: attr_asw,
+//   attr_av: attr_av,
+//   attr_cost: attr_cost,
+//   attr_eva: attr_eva,
+//   attr_fp: attr_fp,
+//   attr_hp: attr_hp,
+//   attr_luck: attr_luck,
+//   attr_rid: attr_rld,
+//   attr_trp: attr_trp,
+// };
+
+<Box
+  bgImage={`url('${skinP}')`}
+  bgPosition="left"
+  bgRepeat="no-repeat"
+  bgClip={"unset"}
+  height={"container.lg"}
+  backgroundAttachment={"fixed"}
+  overflow={"unset"}
+/>;

@@ -17,7 +17,7 @@ const DatabaseReader = () => {
           // console.log("B: ", result);
           let ships = result;
 
-          ships.toSorted((a, b) => {
+          ships = ships.toSorted((a, b) => {
             if (a.id < b.id) return -1;
             if (a.id > b.id) return 1;
             return 0;
