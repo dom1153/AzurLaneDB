@@ -1,7 +1,4 @@
 import {
-  Wrap,
-  Container,
-  Textarea,
   Tooltip,
   Tabs,
   TabList,
@@ -10,22 +7,18 @@ import {
   TabPanel,
   Flex,
   Grid,
-  GridItem,
   Stack,
   HStack,
-  VStack,
   Link,
   Heading,
-  Image,
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
   Text,
   Box,
+  Image,
+  Card,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import * as AttrIcons from "../../assets/asset_index.js";
+import { Ship } from "@azurapi/azurapi/build/types/ship.ts";
 
 function Gallery(ship, img, id) {
   return (
@@ -42,7 +35,7 @@ function Gallery(ship, img, id) {
   );
 }
 
-function Skin(ship, img, setSkin, id) {
+function SkinItem(ship, img, setSkin, id) {
   function onClickHandler(s) {
     setSkin(s);
   }
@@ -62,7 +55,7 @@ function Skin(ship, img, setSkin, id) {
 function Skill(ship, skill, id) {
   return (
     <div key={`${ship.names.en}_skill_${id}`}>
-      <Flex direction="" bgColor={"blue.100"}>
+      <Flex bgColor={"blue.100"}>
         <Box boxSize="">
           <Image src={skill.icon} loading="lazy" />
         </Box>
@@ -113,7 +106,7 @@ function Portrait({ ship, skin }) {
   if (!ship) return <Text>Empty</Text>;
   let skinP, chibi;
   let bg = null;
-  if (skin == "") {
+  if (skin == "" || skin == null) {
     skinP = ship.skins[0].image;
     chibi = ship.skins[0].chibi;
   } else {
@@ -183,7 +176,7 @@ function SkinDump({ ship, setSkin }) {
   return (
     <>
       <Grid templateColumns={"repeat(5, 1fr)"} gap="8px">
-        {ship.skins.map((g, i) => Skin(ship, g, setSkin, i))}
+        {ship.skins.map((g, i) => SkinItem(ship, g, setSkin, i))}
       </Grid>
     </>
   );
@@ -193,9 +186,7 @@ function StatDump({ ship }) {
   if (!ship) return <></>;
   // VVV may need to become state....
   const stats = ship.stats.level120;
-  function InfoCardGrid({ header, body }) {
-    return <GridItem></GridItem>;
-  }
+
   return (
     <>
       <Heading>Level 120</Heading>
@@ -326,8 +317,8 @@ function parseShipDetails(ship) {
   return { level_background };
 }
 
-export default function Details({ ship = null, children }) {
-  const [skin, setSkin] = useState("");
+export default function Details({ ship = null }) {
+  const [skin, setSkin] = useState(null);
   const [levelBg, setLevelBg] = useState(AttrIcons.detail_bg_gray);
 
   useEffect(() => {
