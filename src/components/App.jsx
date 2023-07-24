@@ -3,6 +3,10 @@ import DatabaseReader from "../logic/DatabaseReader";
 import Foo from "./special/Foo";
 import Details from "./details/Details";
 import {
+  Flex,
+  Text,
+  Stack,
+  Button,
   Box,
   HStack,
   Center,
@@ -17,6 +21,7 @@ import {
   AlertDescription,
 } from "@chakra-ui/react";
 import BrowseSearch from "./browse/BrowseSearch";
+import SettingsPanel from "./settings/SettingsPanel";
 import { useEffect, useState } from "react";
 import * as Assets from "../assets/asset_index";
 
@@ -49,9 +54,12 @@ function App() {
   //   console.log("main", shipList);
   // }, [shipList]);
 
+  // bg={"purple.100"}
+  // <Flex h="100vh" flexDir={"column"}>
+
   return (
     <div className="App">
-      <Box h="100vh" bg={"purple.100"}>
+      <Box>
         <HStack spacing="">
           <Alert
             status={isProd() ? "success" : "info"}
@@ -76,32 +84,43 @@ function App() {
             <AlertDescription>"P.P. Alpha" (pre-pre alpha)</AlertDescription>
           </Alert>
         </HStack>
-        <Center>
-          <Tabs index={tabIdx} onChange={handleTabsChange}>
-            <Center>
-              <TabList zIndex={1000} bg={"white"}>
-                <Tab>Search</Tab>
-                <Tab>Details</Tab>
-                {isDev() && <Tab>Test</Tab>}
-              </TabList>
-            </Center>
-            <TabPanels>
-              <TabPanel p={"0"}>
-                {true && (
-                  <BrowseSearch ships={shipList} setShip={handleSetSecretary} />
-                )}
-              </TabPanel>
-              <TabPanel bg="blue.100" p={"0"}>
-                {true && <Details ship={ship} />}
-              </TabPanel>
-              {isDev() && (
-                <TabPanel display={"flex"}>
-                  <Foo />
-                </TabPanel>
+        <Tabs
+          align={"center"}
+          index={tabIdx}
+          onChange={handleTabsChange}
+          // flex={"1"}
+          // display={"flex"}
+          // flexDir={"column"}
+        >
+          <TabList zIndex={1000}>
+            <Tab>Search</Tab>
+            <Tab>Details</Tab>
+            {isDev() && <Tab>Test</Tab>}
+            <Tab>Settings</Tab>
+          </TabList>
+          <TabPanels>
+            <TabPanel p={"0"}>
+              {true && (
+                <BrowseSearch ships={shipList} setShip={handleSetSecretary} />
               )}
-            </TabPanels>
-          </Tabs>
-        </Center>
+            </TabPanel>
+            <TabPanel p={"0"}>{true && <Details ship={ship} />}</TabPanel>
+            {isDev() && (
+              <TabPanel
+                // display={"flex"}
+                // flex={"1"}
+                // overflowY={"hidden"}
+                bg={"purple.100"}
+                color={"black"}
+              >
+                <Foo />
+              </TabPanel>
+            )}
+            <TabPanel>
+              <SettingsPanel></SettingsPanel>
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
       </Box>
     </div>
   );

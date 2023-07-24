@@ -5,31 +5,22 @@ import { Text } from "@chakra-ui/react";
 
 // for testing new concepts
 export default function Foo({ children }) {
-  if (false) {
-    fetch(
-      "https://raw.githubusercontent.com/AzurAPI/azurapi-js-setup/master/ships.json"
-    )
-      .then((result) => {
-        console.log("A: ", result);
-        return result.json();
-      })
-      .then(
-        (result) => {
-          console.log("B: ", result);
-        },
-        (error) => {
-          console.log("Error: ", error);
-        }
-      );
-  }
+  return (
+    <>
+      <LoremDump />
+    </>
+  );
+}
+
+function LoremDump() {
   return (
     <>
       <Cha.Box
         bg="blue.100"
-        flexDir={"column"}
-        h="xl"
-        flex={"1"}
-        overflowY={"scroll"}
+        color="black"
+        // h="xl"
+        // h="100%"
+        // overflowY={"scroll"}
       >
         <Cha.Text flexGrow={1}>Haha some basic content</Cha.Text>
         <Text fontSize={"9xl"}>{lorem()}</Text>
@@ -38,6 +29,25 @@ export default function Foo({ children }) {
       <Cha.Button /> */}
     </>
   );
+}
+
+// VVV these aren't exported, so they aren't taking extra memory when this file is imported
+function fetchShipJson() {
+  fetch(
+    "https://raw.githubusercontent.com/AzurAPI/azurapi-js-setup/master/ships.json"
+  )
+    .then((result) => {
+      console.log("A: ", result);
+      return result.json();
+    })
+    .then(
+      (result) => {
+        console.log("B: ", result);
+      },
+      (error) => {
+        console.log("Error: ", error);
+      }
+    );
 }
 
 function lorem() {
