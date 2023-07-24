@@ -18,7 +18,7 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import * as AttrIcons from "../../assets/asset_index.js";
-import { Ship } from "@azurapi/azurapi/build/types/ship.ts";
+// import { Ship } from "@azurapi/azurapi/build/types/ship.ts";
 
 function Gallery(ship, img, id) {
   return (

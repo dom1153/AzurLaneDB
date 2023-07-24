@@ -1,28 +1,13 @@
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  Button,
   HStack,
   Input,
   Center,
   Grid,
-  GridItem,
   Stack,
-  Link,
-  Heading,
   Image,
   Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
   Text,
   Box,
-  useDisclosure,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import * as Assets from "@/assets/asset_index";
