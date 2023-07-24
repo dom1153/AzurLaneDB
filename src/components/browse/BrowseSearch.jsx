@@ -25,7 +25,8 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import * as Assets from "../../assets/asset_index";
+import * as Assets from "@/assets/asset_index";
+import FilterButton from "./FilterButton";
 
 function ShipCard(ship, displayMode, setShip) {
   return (
@@ -33,7 +34,7 @@ function ShipCard(ship, displayMode, setShip) {
       key={ship.id}
       display={displayMode}
       variant={"outline"}
-      bg={"blue.100"}
+      // bg={"blue.100"}
       onClick={() => setShip(ship)}
     >
       <Image src={ship.thumbnail} />
@@ -57,119 +58,6 @@ function ShipCard(ship, displayMode, setShip) {
 //     {ship.names.en}
 //   </marquee>
 // )}
-
-function FilterButton() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  function SortButtons() {
-    return (
-      <>
-        <HStack>
-          <Text w="75px">Sort</Text>
-          <Box>
-            <Button>Sort A</Button>
-            <Button>Sort B</Button>
-            <Button>Sort C</Button>
-            <Button>Sort D</Button>
-          </Box>
-        </HStack>
-      </>
-    );
-  }
-  function HullButtons() {
-    return (
-      <>
-        <HStack>
-          <Text w="75px">Hull</Text>
-          <Box>
-            <Button>Filter A</Button>
-            <Button>Filter B</Button>
-            <Button>Filter C</Button>
-            <Button>Filter D</Button>
-          </Box>
-        </HStack>
-      </>
-    );
-  }
-  function FactionButtons() {
-    return (
-      <>
-        <HStack>
-          <Text w="75px">Faction</Text>
-          <Box>
-            <Button>Filter A</Button>
-            <Button>Filter B</Button>
-            <Button>Filter C</Button>
-            <Button>Filter D</Button>
-          </Box>
-        </HStack>
-      </>
-    );
-  }
-  function RarityButtons() {
-    return (
-      <>
-        <HStack>
-          <Text w="75px">Rarity</Text>
-          <Box>
-            <Button>Filter A</Button>
-            <Button>Filter B</Button>
-            <Button>Filter C</Button>
-            <Button>Filter D</Button>
-          </Box>
-        </HStack>
-      </>
-    );
-  }
-  function OtherButtons() {
-    return (
-      <>
-        <HStack>
-          <Text w="75px">Other</Text>
-          <Box>
-            <Button>Filter A</Button>
-            <Button>Filter B</Button>
-            <Button>Filter C</Button>
-            <Button>Filter D</Button>
-          </Box>
-        </HStack>
-      </>
-    );
-  }
-
-  return (
-    <>
-      <Button onClick={onOpen}>Filter</Button>
-
-      {/* something is final ref ; open search on close */}
-      <Modal isOpen={isOpen} onClose={onClose} size="xl">
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Sort and Filter</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Stack>
-              <SortButtons />
-              <HullButtons />
-              <FactionButtons />
-              <RarityButtons />
-              <OtherButtons />
-            </Stack>
-          </ModalBody>
-
-          <ModalFooter>
-            <Button variant="ghost" onClick={onClose}>
-              Cancel
-            </Button>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Confirm
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
-  );
-}
 
 export default function BrowseSearch({ ships, setShip, children }) {
   const CARD_DISPLAY = "flex";
@@ -215,23 +103,28 @@ export default function BrowseSearch({ ships, setShip, children }) {
         // bgRepeat="no-repeat"
         // bgClip={"unset"}
         // bgSize={"cover"}
-        bgSize={"contain"}
+        // bgSize={"contain"}
         backgroundAttachment={"local, scroll"}
         // overflow={"unset"}
-        w={"100vw"}
+        // w={"100vw"}
         p={"2"}
       >
         <Center>
-          <Stack maxW={"container.lg"}>
-            <HStack>
-              <Input
-                placeholder="filter ship names"
-                margin={"sm"}
-                bg={"white"}
-                onChange={(e) => search(e.target.value)}
-              />
-              <FilterButton />
-            </HStack>
+          <Stack maxW={"container.md"}>
+            <Card p={"2"} position={"sticky"} top="0" zIndex={1000}>
+              <HStack>
+                <Input
+                  placeholder="filter ship names"
+                  margin={"sm"}
+                  // bg={"white"}
+                  variant={"filled"}
+                  onChange={(e) => search(e.target.value)}
+
+                  // colorScheme="blue"
+                />
+                <FilterButton />
+              </HStack>
+            </Card>
             {/* TODO: dynamically set grid size */}
             <Grid templateColumns={"repeat(6, 1fr)"} gap={6}>
               {ships &&
