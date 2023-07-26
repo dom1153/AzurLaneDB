@@ -32,8 +32,8 @@ export default function useAzurApi() {
 
           // set default ship
           const DEFAULT_SHIP = ships.filter((s: Ship) =>
-            s.names.en.toLowerCase().includes("essex")
-          )[0];
+            s.names.en.toLowerCase().includes(DEFAULT_SHIP_NAME)
+          )[DEFAULT_SHIP_FILTER_IDX];
           setResumeShipId(DEFAULT_SHIP);
 
           // console.log("final success ajax: ", shipList, ship);
