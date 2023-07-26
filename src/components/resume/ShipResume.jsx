@@ -317,7 +317,7 @@ function parseShipDetails(ship) {
   return { level_background };
 }
 
-export default function Details({ ship = null }) {
+export default function ShipDetail({ ship = null }) {
   const [skin, setSkin] = useState(null);
   const [levelBg, setLevelBg] = useState(AttrIcons.detail_bg_gray);
 

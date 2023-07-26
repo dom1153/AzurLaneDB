@@ -3,23 +3,23 @@ import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 
 import { isDev, DEFAULT_TAB_INDEX } from "../../utils/devTools";
-import DatabaseReader from "../../hooks/DatabaseReader";
+import useAzurApi from "../../hooks/useAzurApi";
 
-import BrowseSearch from "../browse/BrowseSearch";
-import Details from "../details/Details";
+import ShipArchive from "../browse/ShipArchive";
+import ShipDetail from "../resume/ShipResume";
 import Foo from "../special/Foo";
 import SettingsPanel from "../settings/SettingsPanel";
 
-export default function MainTab({}) {
-  const { shipList, ship, setShip, getDB } = DatabaseReader();
-  const [tabIdx, setTabIdx] = useState(DEFAULT_TAB_INDEX);
+const SHIP_DETAIL_TAB = 1;
 
-  const handleTabsChange = (index) => {
-    setTabIdx(index);
-  };
-  function handleSetSecretary(ship) {
-    setShip(ship);
-    setTabIdx(1);
+export default function MainTab({}) {
+  const { fullShipList, resumeShipId, setResumeShipId, getDB } = useAzurApi();
+  const [tabId, setTabId] = useState(DEFAULT_TAB_INDEX);
+
+  function shipCardClickHandler(ship) {
+    // when click on card from browse/search ; go to details tab
+    setResumeShipId(ship);
+    setTabId(SHIP_DETAIL_TAB);
   }
 
   useEffect(() => {
@@ -28,7 +28,7 @@ export default function MainTab({}) {
 
   return (
     <>
-      <Tabs align={"center"} index={tabIdx} onChange={handleTabsChange}>
+      <Tabs align={"center"} index={tabId} onChange={(i) => setTabId(i)}>
         <TabList zIndex={1000}>
           <Tab>Search</Tab>
           <Tab>Details</Tab>
@@ -38,10 +38,15 @@ export default function MainTab({}) {
         <TabPanels>
           <TabPanel p={"0"}>
             {true && (
-              <BrowseSearch ships={shipList} setShip={handleSetSecretary} />
+              <ShipArchive
+                ships={fullShipList}
+                setShip={shipCardClickHandler}
+              />
             )}
           </TabPanel>
-          <TabPanel p={"0"}>{true && <Details ship={ship} />}</TabPanel>
+          <TabPanel p={"0"}>
+            {true && <ShipDetail ship={resumeShipId} />}
+          </TabPanel>
           {isDev() && (
             <TabPanel bg={"purple.100"} color={"black"}>
               <Foo />

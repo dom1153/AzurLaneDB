@@ -4,7 +4,11 @@ Top down
     Add tsx as needed. ONE file at a time...
     Add proptypes to subcomponents
     If a component is modular make it a new component
-
+    Refactor names to be more precise
+        shiparchive
+        shipdetail
+        ^^^ we'll keep them seperate for dev reasons
+        
 code:
     sys libs at Top
     \n newline
