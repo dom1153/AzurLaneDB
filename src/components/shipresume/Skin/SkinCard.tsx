@@ -17,8 +17,9 @@ export function SkinCard({ img }) {
 function useSkinCard() {
   const nyi = useNyi();
 
-  function onClickHandler(s) {
+  function onClickHandler(img) {
     nyi();
+    img; // make ts happy
     // setSkin(s);
   }
 

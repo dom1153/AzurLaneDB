@@ -3,7 +3,6 @@ import { useSetAtom } from "jotai";
 import { Ship } from "@azurapi/azurapi/build/types/ship";
 
 import { MAIN_TAB_NAMES } from "@/hooks/useGlobals";
-import { useNyi } from "@/hooks/useDevTools";
 
 import { mainTabIndexAtom } from "@components/MainTab";
 import { resumeShipAtom } from "@/views/ShipResume";
@@ -37,11 +36,9 @@ export default function ShipCard({ ship, displayMode }) {
 function useShipCard() {
   const setShip = useSetAtom(resumeShipAtom);
   const setTab = useSetAtom(mainTabIndexAtom);
-  const nyi = useNyi();
 
   function shipCardClickHandler(ship: Ship) {
     setShip(ship);
-    // nyi();
     setTab(MAIN_TAB_NAMES.RESUME);
   }
   return { shipCardClickHandler };
