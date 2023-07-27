@@ -1,17 +1,19 @@
-import { useState } from "react";
+import { useEffect } from "react";
+import { useSetAtom } from "jotai";
 import { Ship } from "@azurapi/azurapi/build/types/ship";
+
+import { fullShipListAtom } from "@/hooks/useGlobals";
 import {
   DEFAULT_SHIP_NAME,
   DEFAULT_SHIP_FILTER_IDX,
-} from "@src/utils/devTools.jsx";
-// DEFAULT_SHIP_NAME
-// DEFAULT_SHIP_FILTER_IDX
+} from "@/hooks/useDevTools.js";
+import { resumeShipAtom } from "@/views/ShipResume";
 
 export default function useAzurApi() {
-  const [fullShipList, setFullShipList] = useState<Array<Ship> | null>(null);
-  const [resumeShipId, setResumeShipId] = useState<Ship | null>(null);
+  const setFullShipList = useSetAtom(fullShipListAtom);
+  const setResumeShipAtom = useSetAtom(resumeShipAtom);
 
-  function getDB() {
+  function getDb() {
     fetch(
       "https://raw.githubusercontent.com/AzurAPI/azurapi-js-setup/master/ships.json"
     )
@@ -30,13 +32,14 @@ export default function useAzurApi() {
           });
           setFullShipList(ships);
 
-          // set default ship
-          const DEFAULT_SHIP = ships.filter((s: Ship) =>
+          // set default resume ship
+          const resumeShip = ships.filter((s: Ship) =>
             s.names.en.toLowerCase().includes(DEFAULT_SHIP_NAME)
           )[DEFAULT_SHIP_FILTER_IDX];
-          setResumeShipId(DEFAULT_SHIP);
 
-          // console.log("final success ajax: ", shipList, ship);
+          setResumeShipAtom(resumeShip);
+
+          // console.log("final success ajax: ", ships, DEFAULT_SHIP);
         },
         (error) => {
           console.log("Error: ", error);
@@ -44,5 +47,9 @@ export default function useAzurApi() {
       );
   }
 
-  return { fullShipList, resumeShipId, setResumeShipId, getDB };
+  useEffect(() => {
+    getDb();
+  }, []);
+
+  return { getDb };
 }

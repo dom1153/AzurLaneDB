@@ -3,13 +3,20 @@ import { useEffect, useState } from "react";
 import * as Cha from "@chakra-ui/react";
 import { Text } from "@chakra-ui/react";
 
+import { useNyi } from "@/hooks/useDevTools";
+
 // for testing new concepts
 export default function Foo({ children }) {
   return (
     <>
-      <LoremDump />
+      <ToastAlert />
     </>
   );
+}
+
+function ToastAlert() {
+  const nyi = useNyi();
+  return <Cha.Button onClick={() => nyi()}>Show Toast</Cha.Button>;
 }
 
 function LoremDump() {

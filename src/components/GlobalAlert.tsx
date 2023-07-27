@@ -7,7 +7,7 @@ import {
   AlertDescription,
 } from "@chakra-ui/react";
 
-import { isProd, getDevMode } from "../../utils/devTools";
+import { isProd, getDevMode } from "@/hooks/useDevTools";
 
 // for testing new concepts
 export default function GlobalAlert({}) {

@@ -1,5 +1,5 @@
 // import ships from "../../db/ships.json";
-import { Text, Box, useColorMode, Button } from "@chakra-ui/react";
+import { useColorMode, Button } from "@chakra-ui/react";
 // import { useEffect, useState } from "react";
 
 // for testing new concepts

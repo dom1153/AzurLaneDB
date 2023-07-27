@@ -8,6 +8,8 @@ Top down
         shiparchive
         shipdetail
         ^^^ we'll keep them seperate for dev reasons
+    
+    refactor asset code
         
 code:
     sys libs at Top
