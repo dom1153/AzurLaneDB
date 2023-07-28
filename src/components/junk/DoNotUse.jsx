@@ -190,3 +190,37 @@ const IconAA = (props) => <Image {...props} src={attr_aa} />;
   backgroundAttachment={"fixed"}
   overflow={"unset"}
 />;
+
+function checkHasDuplicatesn() {
+  let seen = [];
+  ships.map((s) => {
+    let id = s.id;
+    console.log(`seen ${id}`);
+    if (id in seen) {
+      console.log(`dupe ship id ${id} => ${s.names.en} ; ${seen[id]}!!!`);
+    }
+    seen[id] = s;
+  });
+  console.log("checked for duplicates");
+}
+
+// 614 ships total
+
+if (inputStr.trim().length === 0) {
+  setVisibleShipGirls(
+    ships.map((s) => s.names.en.toLowerCase().includes(inputStr))
+  );
+} else {
+  setAllShipCardsVisible();
+}
+
+{
+  ships &&
+    ships.map((ship, i) => (
+      <ShipCard
+        key={ship.id}
+        ship={ship}
+        displayMode={visibleShipList[ship.id] ? CARD_DISPLAY : "none"}
+      />
+    ));
+}

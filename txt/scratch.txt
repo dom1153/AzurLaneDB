@@ -31,3 +31,40 @@ code:
     hooks / asssets
     \n newline
     components
+
+filter:
+    how do we do text search rn?
+    can we generalize that function into a hook file
+    okay we can store the display list as a list of bools to save memory
+    this is ok for 1 type of filter (search)
+    
+    ok but it's a fixed size so we can make this work
+    
+    hm this is a problem for sorting though...
+    
+    okay we'll map id's to booleans
+    how do we sort tho?
+    
+    psuedo:
+        - assuming storage is { id: visible}
+        - take the full list and sort by param
+            > returns list of ids in order
+        - walk through list and filter
+        
+        ... filter first is more performant
+        sort should be last, but cost more data
+
+        oh yeah sort can reference idx too...
+        
+        list is only 600 eles it's basically static
+        
+        so 1. search 2. filter 3. sort
+        actually by user input it's either do search, or do filter first, depending on user mode
+        
+        runtime is 600xScalar
+        performance isn't THAT important
+        except for search
+        
+        future...
+            WHAT IF WE ALL SEARCH TAGS?
+            ... tags are just filters tho...

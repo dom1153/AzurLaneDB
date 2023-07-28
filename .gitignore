@@ -31,3 +31,6 @@ server
 
 # for local development
 *.code-workspace
+
+# good for local, too big for git
+ships.json

@@ -22,7 +22,7 @@ import {
 import { ChevronDownIcon } from "@chakra-ui/icons";
 
 // for testing new concepts
-export default function FilterButton({ children }) {
+export default function FilterButton() {
   function FilterButtonWithModal() {
     const { isOpen, onOpen, onClose } = useDisclosure();
     function SortButtons() {

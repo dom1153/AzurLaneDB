@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
-import { useAtomValue } from "jotai";
+import { useEffect } from "react";
+import { atom, useAtom, useAtomValue } from "jotai";
+import { Ship } from "@azurapi/azurapi/build/types/ship";
 import {
   HStack,
   Input,
@@ -18,9 +19,21 @@ import { fullShipListAtom } from "@/hooks/useGlobals";
 import FilterButton from "@/components/shiparchive/FilterButton";
 import ShipCard from "@/components/shiparchive/ShipCard";
 
+interface shipCardMeta {
+  hash: number;
+  show: boolean;
+}
+
+const filterAtom = atom([]);
+const sortModeAtom = atom("");
+const searchTermAtom = atom("");
+// id: visible
+const visibleShipCardsAtom = atom([] as shipCardMeta[]);
+
 export default function BrowseSearch() {
   const ships = useAtomValue(fullShipListAtom);
-  const { shipGirls, textSearchHandler } = useShipArchive(ships);
+  const { visibleShipList, textSearchHandler, CARD_DISPLAY, getShipByMeta } =
+    useShipArchive(ships);
 
   if (!ships) {
     return <Text>No ships found</Text>;
@@ -30,9 +43,9 @@ export default function BrowseSearch() {
     <>
       <Box
         bgImage={Assets.technology_bg}
-        bgPosition="center"
-        bgRepeat={"repeat"}
-        // bgRepeat="no-repeat"
+        // bgPosition="center"
+        // bgRepeat={"repeat"}
+        bgRepeat="no-repeat"
         // bgClip={"unset"}
         // bgSize={"cover"}
         // bgSize={"contain"}
@@ -58,14 +71,16 @@ export default function BrowseSearch() {
             </Card>
             {/* TODO: dynamically set grid size */}
             <Grid templateColumns={"repeat(6, 1fr)"} gap={6}>
-              {ships &&
-                ships.map((ship, i) => (
+              {visibleShipList.map((meta) => {
+                let ship = getShipByMeta(meta);
+                return (
                   <ShipCard
                     key={ship.id}
                     ship={ship}
-                    displayMode={shipGirls[i]}
+                    displayMode={meta.show ? CARD_DISPLAY : "none"}
                   />
-                ))}
+                );
+              })}
             </Grid>
           </Stack>
         </Center>
@@ -74,35 +89,65 @@ export default function BrowseSearch() {
   );
 }
 
-export const useShipArchive = (ships) => {
-  let ALL_VISIBLE = [];
+export const useShipArchive = (ships: Ship[]) => {
   const CARD_DISPLAY = "flex";
-  const [shipGirls, setShipGirls] = useState(ALL_VISIBLE);
-  useEffect(() => {
-    // VVV hacky for sure...
-    search("");
-  }, []);
+  const [filters, setFilters] = useAtom(filterAtom);
+  const [sortMode, setSortMode] = useAtom(sortModeAtom);
+  const [searchTerm, setSearchTerm] = useAtom(searchTermAtom);
+  const [visibleShipList, setVisibleShipList] = useAtom(visibleShipCardsAtom);
+  enum FilterMode {
+    Text,
+    Type,
+  }
 
   useEffect(() => {
-    // make all ships visible
-    if (ships) {
-      ALL_VISIBLE = ships.map(() => CARD_DISPLAY);
-    }
+    // populate the mapping
+    setVisibleShipList(getFullVisibleShipCardList());
+    console.log("useEffect: ", ships.length);
   }, [ships]);
 
-  function search(i) {
-    if (i != "") {
-      setShipGirls(
-        ships.map((s) =>
-          s.names.en.toLowerCase().includes(i) ? CARD_DISPLAY : "none"
-        )
-      );
-    } else {
-      setShipGirls(ALL_VISIBLE);
+  function getFullVisibleShipCardList() {
+    return ships.map(
+      (s, index) => ({ hash: index, show: true } as shipCardMeta)
+    );
+  }
+
+  function textSearchHandler(inputStr) {
+    // set minor 100s delay?
+    setSearchTerm(inputStr);
+    console.log("inputstr", inputStr);
+    searchSortFilterShips(FilterMode.Text, inputStr);
+  }
+
+  function searchSortFilterShips(mode: FilterMode, inputStr: string) {
+    if (FilterMode.Text == mode) {
+      let lst = getFullVisibleShipCardList(); // reset list
+      lst = filterShipName(inputStr, lst);
+      setVisibleShipList(lst);
+    }
+
+    function filterShipName(name, localList: shipCardMeta[]): shipCardMeta[] {
+      if (name.trim().length !== 0) {
+        let newlist = localList.map((m) => {
+          let ship = getShipByMeta(m);
+          if (!ship.names.en.toLowerCase().includes(name)) {
+            return { hash: m.hash, show: false } as shipCardMeta;
+          } else {
+            return m;
+          }
+        });
+        return newlist;
+      }
+
+      return localList;
     }
   }
 
-  return { shipGirls, textSearchHandler: search };
+  function getShipByMeta(meta: shipCardMeta) {
+    return ships[meta.hash];
+  }
+
+  return { visibleShipList, textSearchHandler, CARD_DISPLAY, getShipByMeta };
 };
 
 // function useShipUtils(): { changeResumeShip: any; changeMainTab: any } {

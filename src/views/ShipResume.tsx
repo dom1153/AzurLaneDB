@@ -6,7 +6,7 @@ import { Ship } from "@azurapi/azurapi/build/types/ship";
 import { atom, useAtomValue } from "jotai";
 import { useEffect } from "react";
 
-const resumeShip: Ship = null;
+const resumeShip: Ship | null = null;
 const resumeSkin: number = 0;
 const resumeBG: string = AttrIcons.detail_bg_gray;
 
