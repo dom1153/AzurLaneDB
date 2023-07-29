@@ -12,7 +12,7 @@ interface RadioGroupProps {
   options: radioKV[];
   defaultValue: string;
   groupName: radioKV;
-  valueAtom: Atom;
+  valueAtom: Atom<any>;
 }
 
 // 1. Create a component that consumes the `useRadio` hook
@@ -29,7 +29,7 @@ export default function CustomRadioGroup({
     return <>No options passesd</>;
   }
   // const options = ["react", "vue", "svelte"];
-  const setVal = useSetAtom(valueAtom);
+  const setVal = useSetAtom<any>(valueAtom);
 
   function onChange(value) {
     console.log(value);
