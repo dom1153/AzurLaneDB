@@ -7,6 +7,7 @@ import { Ship } from "@azurapi/azurapi/build/types/ship";
 export enum MAIN_TAB_NAMES {
   ARCHIVE,
   RESUME,
+  FOO,
   SETTINGS,
 }
 

@@ -29,6 +29,9 @@ dependencies:
   jotai:
     specifier: ^2.2.2
     version: 2.2.2(react@18.2.0)
+  prop-types:
+    specifier: ^15.8.1
+    version: 15.8.1
   react:
     specifier: ^18.2.0
     version: 18.2.0
@@ -67,9 +70,6 @@ devDependencies:
   eslint-plugin-react-refresh:
     specifier: ^0.4.1
     version: 0.4.1(eslint@8.44.0)
-  postcss:
-    specifier: ^8.4.23
-    version: 8.4.23
   typescript:
     specifier: ^5.1.6
     version: 5.1.6
@@ -1294,6 +1294,7 @@ packages:
 
   /@emotion/memoize@0.7.4:
     resolution: {integrity: sha512-Ja/Vfqe3HpuzRsG1oBtWTHk2PGZ7GR+2Vz5iYGelAw8dx32K0y7PjVuxK6z1nMpZOqAFsRUPCkK1YjJ56qJlgw==}
+    requiresBuild: true
     dev: false
     optional: true
 

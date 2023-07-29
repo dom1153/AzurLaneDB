@@ -13,9 +13,187 @@ export default function Foo({ children }) {
 
   return (
     <>
-      <ToastAlert />
+      <Cha.Stack>
+        <Cha.Box>
+          <Cha.Button>Test</Cha.Button>
+        </Cha.Box>
+        <MyToggleGroup />
+        <ChakraRadioGroupExample />
+        <RadioGroupBasic />
+      </Cha.Stack>
     </>
   );
+}
+
+function RadioGroupBasic() {
+  const [value, setValue] = useState("1");
+
+  function RadioButton({ v, t }) {
+    return (
+      <>
+        <Cha.Radio bg="gray.100" value={v} mr="5">
+          <Cha.Box bg={"blue.100"} p="2" rounded={"lg"}>
+            {t}
+          </Cha.Box>
+        </Cha.Radio>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <Cha.Box bg={"white"}>
+        <input type="radio" value="test" />
+        <Cha.RadioGroup onChange={setValue} value={value}>
+          <Cha.Stack direction="row">
+            <RadioButton v="1" t="First" />
+            <RadioButton v="2" t="Second" />
+            <RadioButton v="3" t="Third" />
+          </Cha.Stack>
+        </Cha.RadioGroup>
+      </Cha.Box>
+    </>
+  );
+}
+function ChakraRadioGroupExample() {
+  function CustomRadio(props) {
+    const { image, ...radioProps } = props;
+    const { state, getInputProps, getRadioProps, htmlProps, getLabelProps } =
+      Cha.useRadio(radioProps);
+
+    return (
+      <label {...htmlProps} cursor="pointer">
+        <input {...getInputProps({})} hidden />
+        <Cha.Box
+          {...getRadioProps()}
+          bg={state.isChecked ? "green.200" : "transparent"}
+          w={12}
+          p={1}
+          rounded="full"
+        >
+          <Cha.Image src={image} rounded="full" {...getLabelProps()} />
+        </Cha.Box>
+      </label>
+    );
+  }
+
+  const toast = Cha.useToast();
+
+  const avatars = [
+    {
+      name: "Kat",
+      image: "https://randomuser.me/api/portraits/women/44.jpg",
+    },
+    {
+      name: "Kevin",
+      image: "https://randomuser.me/api/portraits/men/86.jpg",
+    },
+    { name: "Andy", image: "https://randomuser.me/api/portraits/men/29.jpg" },
+    {
+      name: "Jess",
+      image: "https://randomuser.me/api/portraits/women/95.jpg",
+    },
+  ];
+
+  const handleChange = (value) => {
+    toast({
+      title: `The value got changed to ${value}!`,
+      status: "success",
+      duration: 2000,
+    });
+  };
+
+  const { value, getRadioProps, getRootProps } = Cha.useRadioGroup({
+    defaultValue: "Kevin",
+    onChange: handleChange,
+  });
+
+  return (
+    <Cha.Stack {...getRootProps()}>
+      <Cha.Text>The selected radio is: {value}</Cha.Text>
+      <Cha.HStack>
+        {avatars.map((avatar) => {
+          return (
+            <CustomRadio
+              key={avatar.name}
+              image={avatar.image}
+              {...getRadioProps({ value: avatar.name })}
+            />
+          );
+        })}
+      </Cha.HStack>
+    </Cha.Stack>
+  );
+}
+
+function MyToggleGroup() {
+  const buttonList = [
+    {
+      label: "Name",
+    },
+    {
+      label: "Id",
+    },
+    {
+      label: "Rarity",
+    },
+  ];
+
+  const handleOnChange = (v) => {
+    console.log(`${v} got clicked`);
+  };
+
+  const { value, getRadioProps, getRootProps } = Cha.useRadioGroup({
+    defaultValue: "Name",
+    onChange: handleOnChange,
+  });
+
+  return (
+    <>
+      <Cha.Center>
+        <Cha.HStack {...getRootProps()}>
+          <Cha.Text>{"Sort: "}</Cha.Text>
+          <Cha.HStack>
+            {buttonList.map((b) => (
+              <ToggleButton
+                key={b.label}
+                lbl={b.label}
+                {...getRadioProps({ value: b.label })}
+              />
+            ))}
+          </Cha.HStack>
+        </Cha.HStack>
+      </Cha.Center>
+    </>
+  );
+
+  function ToggleButton(props) {
+    const { lbl, ...radioProps } = props;
+    const { state, getInputProps, getRadioProps, htmlProps, getLabelProps } =
+      Cha.useRadio(radioProps);
+
+    return (
+      <label {...htmlProps}>
+        <input {...getInputProps({})} hidden />
+        <Cha.Box
+          {...getRadioProps()}
+          bg={state.isChecked ? "red" : "blue"}
+          rounded={"lg"}
+          fontWeight={"bold"}
+        >
+          <Cha.Text
+            {...getLabelProps()}
+            // colorScheme={state.isChecked ? "green" : "red"}
+            // colorScheme={"green"}
+            p="2"
+            m="1"
+          >
+            {props.lbl}
+          </Cha.Text>
+        </Cha.Box>
+      </label>
+    );
+  }
 }
 
 function ToastAlert() {

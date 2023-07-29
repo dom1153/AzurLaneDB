@@ -1,6 +1,7 @@
 import { Text, Box, Image } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 import { Ship } from "@azurapi/azurapi/build/types/ship";
+import { BLUR_IMAGE } from "@/hooks/useDevTools";
 
 // leave any portrait display logic here, delegation policy
 // main resume has enough to do
@@ -22,6 +23,7 @@ export function Portrait({ ship, skinId }: PortraitProp) {
           right="0"
           top="0"
           loading="eager"
+          zIndex={3}
         />
         {isFancyPortraitPosition ? (
           <Image
@@ -34,7 +36,12 @@ export function Portrait({ ship, skinId }: PortraitProp) {
             loading="eager"
           />
         ) : (
-          <Image src={skinURL} loading="eager" bgImage={bgURL} />
+          <Image
+            src={skinURL}
+            loading="eager"
+            bgImage={bgURL}
+            filter={BLUR_IMAGE ? "blur(10px)" : ""}
+          />
         )}
       </Box>
     </>

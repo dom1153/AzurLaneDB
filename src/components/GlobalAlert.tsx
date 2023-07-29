@@ -7,10 +7,11 @@ import {
   AlertDescription,
 } from "@chakra-ui/react";
 
-import { isProd, getDevMode } from "@/hooks/useDevTools";
+import { isProd, getDevMode, isLocalhost } from "@/hooks/useDevTools";
 
 // for testing new concepts
 export default function GlobalAlert({}) {
+  if (!isLocalhost) return <></>;
   return (
     <>
       <HStack spacing="">

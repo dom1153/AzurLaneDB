@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { Box } from "@chakra-ui/react";
 
 import useAzurApi from "@/hooks/useAzurApi";
 
@@ -9,10 +10,10 @@ function App() {
   const {} = useApp();
 
   return (
-    <div className="App">
+    <Box className="App" h="100vh">
       <GlobalAlert />
       <MainTab />
-    </div>
+    </Box>
   );
 }
 
