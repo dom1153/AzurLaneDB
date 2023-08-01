@@ -1,6 +1,5 @@
 import { Tooltip, Link, Image } from "@chakra-ui/react";
 
-// import { Ship } from "@azurapi/azurapi/build/types/ship.ts";
 export function ArtworkCard(ship, img, id) {
   return (
     <Link

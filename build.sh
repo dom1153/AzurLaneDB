@@ -21,7 +21,8 @@ if [ ! -d "node_modules" ]; then
 fi
 
 # check for pnpm
-cmd='run build --watch'
+# --watch
+cmd='run build'
 if type "pnpm" 2> /dev/null; then
   pnpm $cmd 
 else

@@ -2,7 +2,7 @@ import { Center, Image, Card, Text, Box } from "@chakra-ui/react";
 import { useSetAtom } from "jotai";
 import { Ship } from "@azurapi/azurapi/build/types/ship";
 
-import { MAIN_TAB_NAMES } from "@/hooks/useGlobals";
+import { MAIN_TAB_NAMES } from "@/hooks/useDevTools";
 
 import { mainTabIndexAtom } from "@components/MainTab";
 import { resumeShipAtom } from "@/views/ShipResume";
@@ -14,11 +14,10 @@ export default function ShipCard({ ship, displayMode, moreInfo }) {
     <Card
       key={ship.id}
       display={displayMode ? "box" : "none"}
-      variant={"outline"}
-      // bg={"blue.100"}
       onClick={() => shipCardClickHandler(ship)}
       bgColor={cardColorByRarity(ship)}
       color={"black"}
+      borderRadius={"none"}
     >
       <Box position={"relative"}>
         <Image src={ship.thumbnail} />
@@ -89,11 +88,3 @@ function useShipCard() {
   }
   return { shipCardClickHandler, cardColorByRarity };
 }
-
-// {/* <Text fontSize={"3xs"}>Universal Bulin</Text> */}
-// {/* <Link fontSize={"3xs"} href={ship.wikiUrl}> */}
-// {false && (
-//   <marquee behavior="" direction="" scrolldelay="">
-//     {ship.names.en}
-//   </marquee>
-// )}

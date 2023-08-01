@@ -25,16 +25,16 @@ const RarityMap = {
   Decisive: 4,
 };
 
-export const filterAtom = atom([]);
-export const sortModeAtom = atom(filterData.sortGroup.default);
+// export const filterAtom = atom([]);
+// export const sortModeAtom = atom(filterData.sortGroup.default);
 const searchTermAtom = atom("");
 // id: visible
 const visibleShipCardsAtom = atom([] as ShipCardMeta[]);
 
 export const useShipArchive = () => {
   const ships = useAtomValue(fullShipListAtom);
-  const [filters, setFilters] = useAtom(filterAtom);
-  const [sortMode, setSortMode] = useAtom(sortModeAtom);
+  // const [filters, setFilters] = useAtom(filterAtom);
+  // const [sortMode, setSortMode] = useAtom(sortModeAtom);
   const [searchTerm, setSearchTerm] = useAtom(searchTermAtom);
   const [shipListMeta, setShipListMeta] = useAtom(visibleShipCardsAtom);
   enum FilterMode {
@@ -49,7 +49,7 @@ export const useShipArchive = () => {
 
   useEffect(() => {
     setShipListMeta(getFullVisibleShipCardList());
-    console.log("useEffect ShipArchive: ", ships.length);
+    // console.log("useEffect ShipArchive: ", ships.length);
   }, [ships]);
 
   // TODO: extract later
@@ -62,12 +62,12 @@ export const useShipArchive = () => {
   function textSearchHandler(inputStr) {
     // set minor 100s delay?
     setSearchTerm(inputStr);
-    searchSortFilterShips(FilterMode.Text, inputStr, sortMode, filters);
+    // searchSortFilterShips(FilterMode.Text, inputStr, sortMode, filters);
   }
 
   function filterButtonHandler(filterProps) {
-    setFilters(filterProps.filters);
-    setSortMode(filterProps.sortMode);
+    // setFilters(filterProps.filters);
+    // setSortMode(filterProps.sortMode);
     searchSortFilterShips(
       FilterMode.Type,
       searchTerm,

@@ -33,4 +33,10 @@ server
 *.code-workspace
 
 # good for local, too big for git
-ships.json
+bak/*
+
+donotpassgo
+
+txt/*
+
+types/*

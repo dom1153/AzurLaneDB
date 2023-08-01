@@ -21,6 +21,7 @@ import {
 } from "@chakra-ui/react";
 
 import { ChevronDownIcon } from "@chakra-ui/icons";
+import LoremDump from "@/components/foo/LoremDump";
 
 // TODO: make this an * later
 import filterData from "@/components/shiparchive/filter/FilterData.json";
@@ -28,28 +29,28 @@ import filterData from "@/components/shiparchive/filter/FilterData.json";
 import CustomRadioGroup from "@src/components/shiparchive/filter/radio/CustomRadioGroup";
 import { useEffect, useState } from "react";
 import { atom, useAtom, useAtomValue } from "jotai";
-import { filterAtom, sortModeAtom } from "@/hooks/useShipArchive";
+// import { filterAtom, sortModeAtom } from "@/hooks/useShipArchive";
 import { DEBUG_FILTER_MODAL, isDev } from "@/hooks/useDevTools";
 
 interface FilterParams {
   onConfirm: () => void;
 }
 
-const localSortAtom = atom(filterData.sortGroup.default);
-const localFilterAtom = atom([]);
+// const localSortAtom = atom(filterData.sortGroup.default);
+// const localFilterAtom = atom([]);
 
 // for testing new concepts
 export default function FilterButton({ onConfirmHandler }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   function FilterButtonWithModal() {
-    let sortValue = useAtomValue(localSortAtom);
-    let lastSortValue = useAtomValue(sortModeAtom);
-    let lastFilterValue = useAtomValue(filterAtom);
+    // let sortValue = useAtomValue(localSortAtom);
+    // let lastSortValue = useAtomValue(sortModeAtom);
+    // let lastFilterValue = useAtomValue(filterAtom);
 
     function onConfirm() {
       onClose();
-      console.log("sortvalue:", sortValue);
-      onConfirmHandler({ filters: [], sortMode: sortValue });
+      // console.log("sortvalue:", sortValue);
+      // onConfirmHandler({ filters: [], sortMode: sortValue });
     }
 
     return (
@@ -60,22 +61,15 @@ export default function FilterButton({ onConfirmHandler }) {
         <Modal
           isOpen={isOpen}
           onClose={onClose}
-          size="xl"
+          size="full"
           closeOnOverlayClick={false}
         >
           <ModalOverlay backdropFilter={"auto"} backdropBlur={"2px"} />
-          <ModalContent>
+          <ModalContent h="inherit">
             <ModalHeader>Sort and Filter</ModalHeader>
             <ModalCloseButton />
-            <ModalBody>
-              <Stack>
-                <CustomRadioGroup
-                  options={filterData.sortGroup.options}
-                  groupName={filterData.sortGroup.groupName}
-                  defaultValue={lastSortValue}
-                  valueAtom={localSortAtom}
-                />
-              </Stack>
+            <ModalBody bg="blue.100">
+              <Stack overflowY={"auto"}></Stack>
             </ModalBody>
 
             <ModalFooter>
@@ -102,3 +96,10 @@ export default function FilterButton({ onConfirmHandler }) {
     </>
   );
 }
+
+// <CustomRadioGroup
+//   options={filterData.sortGroup.options}
+//   groupName={filterData.sortGroup.groupName}
+//   defaultValue={lastSortValue}
+//   valueAtom={localSortAtom}
+// />

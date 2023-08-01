@@ -38,8 +38,6 @@ export default function useAzurApi() {
           )[DEFAULT_SHIP_FILTER_IDX];
 
           setResumeShipAtom(resumeShip);
-
-          // console.log("final success ajax: ", ships, DEFAULT_SHIP);
         },
         (error) => {
           console.log("Error: ", error);

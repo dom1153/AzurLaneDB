@@ -2,7 +2,13 @@
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 import { atom, useAtom } from "jotai";
 
-import { DEFAULT_TAB_INDEX, isDev } from "@/hooks/useDevTools";
+import {
+  DEFAULT_TAB_INDEX,
+  DEV_TAB_IDX,
+  MAIN_TAB_NAMES,
+  isDev,
+  isProd,
+} from "@/hooks/useDevTools";
 import {
   ENABLE_RESUME,
   ENABLE_FOO,
@@ -33,11 +39,7 @@ export default function MainTab({}) {
         <TabPanels>
           <TabPanel p={"0"}>{ENABLE_ARCHIVE && <ShipArchive />}</TabPanel>
           <TabPanel p={"0"}>{ENABLE_RESUME && <ShipResume />}</TabPanel>
-          {isDev() && (
-            <TabPanel bg={"purple.100"} color={"black"}>
-              {ENABLE_FOO && <Foo />}
-            </TabPanel>
-          )}
+          {isDev() && <TabPanel>{ENABLE_FOO && <Foo />}</TabPanel>}
           <TabPanel>{ENABLE_SETTINGS && <SettingsPanel />}</TabPanel>
         </TabPanels>
       </Tabs>

@@ -1,4 +1,4 @@
-import { Text, HStack, useRadioGroup } from "@chakra-ui/react";
+import { Text, HStack, useRadioGroup, Stack, Heading } from "@chakra-ui/react";
 
 import RadioCard from "@/components/shiparchive/filter/radio/RadioCard";
 import { Atom, useSetAtom } from "jotai";
@@ -45,16 +45,18 @@ export default function CustomRadioGroup({
   const group = getRootProps();
 
   return (
-    <HStack {...group}>
-      <Text>{`${groupName.label}`}:</Text>
-      {options.map(({ value, label }) => {
-        const radio = getRadioProps({ value });
-        return (
-          <RadioCard key={value} {...radio}>
-            {label}
-          </RadioCard>
-        );
-      })}
-    </HStack>
+    <Stack {...group}>
+      <Heading textAlign={"left"} size={"lg"}>{`${groupName.label}`}</Heading>
+      <HStack>
+        {options.map(({ value, label }) => {
+          const radio = getRadioProps({ value });
+          return (
+            <RadioCard key={value} {...radio}>
+              {label}
+            </RadioCard>
+          );
+        })}
+      </HStack>
+    </Stack>
   );
 }

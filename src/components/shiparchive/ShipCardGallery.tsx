@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { atom, useAtom } from "jotai";
 
 let visibleAtom = atom([]);
+
 export default function ShipCardGallery({ shipListMeta }) {
   let [visibleCnt, setVisible] = useAtom(visibleAtom);
 
@@ -19,10 +20,23 @@ export default function ShipCardGallery({ shipListMeta }) {
   if (visibleCnt.length > 0) {
     return (
       <Grid
+        px={"5"}
         templateColumns={"repeat(6, 1fr)"}
         gap={6}
-        overflowY={"scroll"}
-        maxH={"container.sm"}
+        h="container.sm"
+        overflowY={"auto"}
+        sx={{
+          "&::-webkit-scrollbar": {
+            width: "8px",
+          },
+          "&::-webkit-scrollbar-track": {
+            width: "10px",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            background: "white",
+            borderRadius: "24px",
+          },
+        }}
       >
         {shipListMeta.map((meta) => {
           return (

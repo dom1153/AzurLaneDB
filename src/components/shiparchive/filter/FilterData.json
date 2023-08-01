@@ -1,5 +1,5 @@
 {
-  "sortGroup": {
+  "sortHeading": {
     "default": "id",
     "options": [
       { "value": "id", "label": "Default" },
