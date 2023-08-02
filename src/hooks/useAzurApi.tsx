@@ -2,12 +2,12 @@ import { useEffect } from "react";
 import { useSetAtom } from "jotai";
 import { Ship } from "@azurapi/azurapi/build/types/ship";
 
-import { fullShipListAtom } from "@/hooks/useGlobals";
+import { fullShipListAtom, resumeShipAtom } from "@/hooks/useGlobals";
 import {
   DEFAULT_SHIP_NAME,
   DEFAULT_SHIP_FILTER_IDX,
+  isDev,
 } from "@/hooks/useDevTools.js";
-import { resumeShipAtom } from "@/views/ShipResume";
 
 export default function useAzurApi() {
   const setFullShipList = useSetAtom(fullShipListAtom);
@@ -15,7 +15,8 @@ export default function useAzurApi() {
 
   function getDb() {
     fetch(
-      "https://raw.githubusercontent.com/AzurAPI/azurapi-js-setup/master/ships.json"
+      "https://raw.githubusercontent.com/AzurAPI/azurapi-js-setup/master/ships.json",
+      { cache: "force-cache" }
     )
       .then((result) => {
         return result.json();
@@ -44,10 +45,6 @@ export default function useAzurApi() {
         }
       );
   }
-
-  useEffect(() => {
-    getDb();
-  }, []);
 
   return { getDb };
 }

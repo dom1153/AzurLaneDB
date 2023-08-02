@@ -24,7 +24,7 @@ import { ChevronDownIcon } from "@chakra-ui/icons";
 import LoremDump from "@/components/foo/LoremDump";
 
 // TODO: make this an * later
-import filterData from "@/components/shiparchive/filter/FilterData.json";
+import filterData from "@/data/FilterData.json";
 
 import CustomRadioGroup from "@src/components/shiparchive/filter/radio/CustomRadioGroup";
 import { useEffect, useState } from "react";

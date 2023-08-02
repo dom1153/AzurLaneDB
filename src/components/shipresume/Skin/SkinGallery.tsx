@@ -9,7 +9,7 @@ export function SkinGallery({ ship }) {
     <>
       <Grid templateColumns={"repeat(5, 1fr)"} gap="8px">
         {ship.skins.map((g, i) => (
-          <SkinCard key={`${ship.id}_skin_${i}`} img={g} />
+          <SkinCard key={`${ship.id}_skin_${i}`} img={g} idx={i} />
         ))}
       </Grid>
     </>

@@ -1,62 +1,83 @@
-import { Text, Card, Center, Grid } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { Box, Text, Card, Grid } from "@chakra-ui/react";
 
+import { scrollbarCss } from "@/hooks/useGlobals";
+import { ShipCardMeta } from "@/hooks/useFilterPanel";
 import ShipCard from "@/components/shiparchive/ShipCard";
-import { useEffect } from "react";
-import { atom, useAtom } from "jotai";
 
-let visibleAtom = atom([]);
+interface ShipCardGalleryProps {
+  shipListMeta: ShipCardMeta[];
+  onClick?: () => void;
+}
 
-export default function ShipCardGallery({ shipListMeta }) {
-  let [visibleCnt, setVisible] = useAtom(visibleAtom);
+export default function ShipCardGallery({
+  shipListMeta,
+  onClick,
+}: ShipCardGalleryProps) {
+  const { ShipGrid, NoShipFound, visibleCnt, hasVisible } = useShipCardGallery(
+    shipListMeta,
+    onClick
+  );
 
-  useEffect(() => {
-    setVisible(shipListMeta.filter((m) => m.show));
-  }, []);
+  return (
+    <Box
+      h="100%"
+      minH={"100%"}
+      maxH="100%"
+      overflowY={"auto"}
+      sx={scrollbarCss}
+      pt="2"
+    >
+      {hasVisible() ? (
+        <ShipGrid shipMetaList={shipListMeta} />
+      ) : (
+        <NoShipFound />
+      )}
+    </Box>
+  );
+}
 
-  useEffect(() => {
-    setVisible(shipListMeta.filter((m) => m.show));
-  }, [shipListMeta]);
+function useShipCardGallery(shipListMeta: ShipCardMeta[], onClick) {
+  let [visibleCnt, setVisibleCnt] = useState([]);
 
-  if (visibleCnt.length > 0) {
+  function hasVisible() {
+    return shipListMeta.filter((m) => m.show).length > 0;
+  }
+
+  // useEffect(() => {
+  //   setVisibleCnt(shipListMeta.filter((m) => m.show));
+  // }, [shipListMeta]);
+
+  function ShipGrid({ shipMetaList }) {
     return (
-      <Grid
-        px={"5"}
-        templateColumns={"repeat(6, 1fr)"}
-        gap={6}
-        h="container.sm"
-        overflowY={"auto"}
-        sx={{
-          "&::-webkit-scrollbar": {
-            width: "8px",
-          },
-          "&::-webkit-scrollbar-track": {
-            width: "10px",
-          },
-          "&::-webkit-scrollbar-thumb": {
-            background: "white",
-            borderRadius: "24px",
-          },
-        }}
-      >
-        {shipListMeta.map((meta) => {
+      <Grid px={"5"} templateColumns={"repeat(6, 1fr)"} gap={6}>
+        {shipMetaList.map((meta) => {
           return (
             <ShipCard
               key={meta.ship.id}
               ship={meta.ship}
               displayMode={meta.show}
               moreInfo={meta.moreInfo}
+              onClick={onClick}
             />
           );
         })}
       </Grid>
     );
-  } else {
+  }
+
+  function NoShipFound() {
     return (
-      <Center>
-        <Card p={"2"}>
-          <Text>{"No ships match criteria ;) "}</Text>
-        </Card>
-      </Center>
+      <Card p={"2"}>
+        <Text>{"No ships match criteria"}</Text>
+      </Card>
     );
   }
+
+  return {
+    ShipGrid,
+    NoShipFound,
+    visibleCnt,
+    hasVisible,
+  };
 }

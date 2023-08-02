@@ -23,10 +23,9 @@ export default function XLModal() {
           <Cha.ModalCloseButton />
           <Cha.ModalHeader>Modal Title</Cha.ModalHeader>
           <Cha.ModalBody
-            h="inherit"
-            overflowY={"auto"}
             border={"10px ridge"}
             bgColor={"red.100"}
+            overflowY={"auto"}
           >
             <Cha.Flex>
               <Cha.Text maxW={"300px"}>{lorem()}</Cha.Text>

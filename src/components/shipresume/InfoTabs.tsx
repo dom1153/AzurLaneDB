@@ -20,6 +20,7 @@ import { SkillGallery } from "@components/shipresume/Skill/SkillGallery";
 import { StatCard } from "@components/shipresume/Stat/StatCard";
 
 export function InfoTabs({ ship }) {
+  if (!ship) return <Text>This is empty</Text>;
   return (
     <Stack>
       <Card p={"8px"}>

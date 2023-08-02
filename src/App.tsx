@@ -1,17 +1,16 @@
 import { useEffect } from "react";
-import { Box, Flex } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 
 import useAzurApi from "@/hooks/useAzurApi";
 
 import GlobalAlert from "@components/GlobalAlert";
 import MainTab from "@components/MainTab";
-import NavBar from "@components/NavBar";
 
 function App() {
   const {} = useApp();
 
   return (
-    <Flex className="App" flexDir="column">
+    <Flex className="App" flexDir="column" h="100vh">
       <GlobalAlert />
       <MainTab />
     </Flex>
@@ -20,6 +19,7 @@ function App() {
 
 function useApp() {
   const { getDb } = useAzurApi();
+
   useEffect(() => {
     getDb();
   }, []);

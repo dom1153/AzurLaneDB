@@ -20,7 +20,7 @@ export enum MAIN_TAB_NAMES {
 
 // === GLOBAL VARS ===
 export const DEBUG_FILTER_MODAL: boolean = false;
-export const DEV_TAB_IDX = MAIN_TAB_NAMES.ARCHIVE;
+export const DEV_TAB_IDX = MAIN_TAB_NAMES.RESUME;
 export const DEFAULT_SHIP_NAME = "essex"; // case insensitive
 export const DEFAULT_SHIP_FILTER_IDX = 0; // for ship swith overlapping names e.g. enterprise us/hms
 

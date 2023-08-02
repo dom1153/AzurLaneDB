@@ -3,23 +3,18 @@ import * as AttrIcons from "@/assets/asset_index.js";
 import { InfoTabs } from "@components/shipresume/InfoTabs";
 import { Portrait } from "@components/shipresume/Portrait/Portrait";
 import { Ship } from "@azurapi/azurapi/build/types/ship";
-import { atom, useAtomValue } from "jotai";
+import { atom, useAtom, useAtomValue } from "jotai";
 import { useEffect } from "react";
+import useAzurApi from "@/hooks/useAzurApi";
 
-const resumeShip: Ship | null = null;
-const resumeSkin: number = 0;
 const resumeBG: string = AttrIcons.detail_bg_gray;
 
-export const resumeShipAtom = atom(resumeShip);
-export const resumeSkinAtom = atom(resumeSkin);
+import { resumeShipAtom, resumeSkinAtom } from "@/hooks/useGlobals";
+
 export const resumeBGAtom = atom(resumeBG);
 
 export default function ShipResume() {
   const { ship, skinId, bgUrl } = useShipResume();
-
-  if (!ship) {
-    return <Text>No ship found</Text>;
-  }
 
   return (
     <>
@@ -29,14 +24,23 @@ export default function ShipResume() {
         bgRepeat="no-repeat"
         bgClip={"unset"}
         bgSize={"cover"}
-        height={"container.lg"}
         backgroundAttachment={"fixed"}
-        overflow={"unset"}
         p={"2"}
+        h="inherit"
       >
-        <Grid templateColumns={"repeat( 2, 1fr)"}>
-          <Portrait ship={ship} skinId={skinId} />
-          <InfoTabs ship={ship} />
+        <Grid
+          templateColumns={"repeat( 2, 1fr)"}
+          h="inherit"
+          w={"container.lg"}
+        >
+          {ship ? (
+            <>
+              <Portrait ship={ship} skinId={skinId} />
+              <InfoTabs ship={ship} />
+            </>
+          ) : (
+            <Text>Please Wait...</Text>
+          )}
         </Grid>
       </Box>
     </>
@@ -48,13 +52,15 @@ function useShipResume() {
   // outside functions should only just set the ship
 
   const ship = useAtomValue(resumeShipAtom);
-  const skinId = useAtomValue(resumeSkinAtom);
+  const [skinId, setSkinId] = useAtom(resumeSkinAtom);
   const bgUrl = useAtomValue(resumeBGAtom);
 
   // TODO: remove; delegate to children
   useEffect(() => {
+    // console.log("yeah ship: ", ship);
     if (ship) {
-      // // setSkin(ship.skins[0]);
+      setSkinId(0);
+      // setSkin(ship.skins[0]);
       // let { level_background } = parseShipDetails(ship);
       // setBG(level_background);
     }

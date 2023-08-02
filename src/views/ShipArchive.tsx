@@ -1,28 +1,16 @@
-import {
-  HStack,
-  Input,
-  Center,
-  Stack,
-  Card,
-  Text,
-  Box,
-} from "@chakra-ui/react";
+import { HStack, Box, useColorMode } from "@chakra-ui/react";
+import { useAtomValue } from "jotai";
 
 import * as Assets from "@/assets/asset_index";
 
-import { useShipArchive } from "@/hooks/useShipArchive";
+import { visibleShipCardsAtom } from "@/hooks/useFilterPanel";
 
+import SearchFilterPanel from "@components/shiparchive/filter/SearchFilterPanel";
 import ShipCardGallery from "@components/shiparchive/ShipCardGallery";
-import FilterButton from "@components/shiparchive/filter/FilterButton";
-import FilterPanel from "@components/shiparchive/filter/FilterPanel";
 
 export default function ShipArchive() {
-  const { textSearchHandler, shipListMeta, ships, filterButtonHandler } =
-    useShipArchive();
-
-  if (!ships) {
-    return <Text>No ships provided</Text>;
-  }
+  let shipCardMeta = useAtomValue(visibleShipCardsAtom);
+  const { colorMode, toggleColorMode } = useColorMode();
 
   return (
     <>
@@ -32,14 +20,17 @@ export default function ShipArchive() {
         bgColor={"blue.300"}
         bgRepeat="no-repeat"
         bgSize={"cover"}
-        p={"2"}
+        h="100%"
       >
-        <HStack w={"container.lg"} px="2">
-          <FilterPanel
-            textSearchHandler={textSearchHandler}
-            filterButtonHandler={filterButtonHandler}
-          />
-          <ShipCardGallery shipListMeta={shipListMeta} />
+        <HStack
+          w={"container.lg"}
+          px="2"
+          m="0"
+          h="100%"
+          bgColor={colorMode === "light" ? "blue.400" : "gray.800"}
+        >
+          <SearchFilterPanel />
+          <ShipCardGallery shipListMeta={shipCardMeta} />
         </HStack>
       </Box>
     </>

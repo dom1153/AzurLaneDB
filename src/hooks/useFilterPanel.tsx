@@ -5,9 +5,9 @@ import { Ship } from "@azurapi/azurapi/build/types/ship";
 
 import { fullShipListAtom } from "@/hooks/useGlobals";
 import { isLocalhost } from "./useDevTools";
-import filterData from "@/components/shiparchive/filter/FilterData.json";
+import filterData from "@/data/FilterData.json";
 
-interface ShipCardMeta {
+export interface ShipCardMeta {
   ship: Ship;
   show: boolean;
   moreInfo?: string;
@@ -29,9 +29,9 @@ const RarityMap = {
 // export const sortModeAtom = atom(filterData.sortGroup.default);
 const searchTermAtom = atom("");
 // id: visible
-const visibleShipCardsAtom = atom([] as ShipCardMeta[]);
+export const visibleShipCardsAtom = atom([] as ShipCardMeta[]);
 
-export const useShipArchive = () => {
+export default function useFilterPanel() {
   const ships = useAtomValue(fullShipListAtom);
   // const [filters, setFilters] = useAtom(filterAtom);
   // const [sortMode, setSortMode] = useAtom(sortModeAtom);
@@ -41,11 +41,6 @@ export const useShipArchive = () => {
     Text,
     Type,
   }
-
-  // VVV at least useful for module debugging
-  useEffect(() => {
-    setShipListMeta(getFullVisibleShipCardList());
-  }, []);
 
   useEffect(() => {
     setShipListMeta(getFullVisibleShipCardList());
@@ -146,4 +141,4 @@ export const useShipArchive = () => {
   }
 
   return { textSearchHandler, shipListMeta, ships, filterButtonHandler };
-};
+}

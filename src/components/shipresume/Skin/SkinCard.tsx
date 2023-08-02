@@ -1,12 +1,14 @@
 import { Tooltip, Box, Image } from "@chakra-ui/react";
+import { useSetAtom } from "jotai";
 
 import { useNyi } from "@/hooks/useDevTools";
+import { resumeSkinAtom } from "@/hooks/useGlobals";
 
-export function SkinCard({ img }) {
+export function SkinCard({ img, idx }) {
   const { onClickHandler } = useSkinCard();
 
   return (
-    <Box maxW="sm" onClick={() => onClickHandler(img)}>
+    <Box maxW="sm" onClick={() => onClickHandler(idx)}>
       <Tooltip label={`${img.name}`}>
         <Image src={img.image} objectFit={"cover"} loading="lazy" />
       </Tooltip>
@@ -16,10 +18,11 @@ export function SkinCard({ img }) {
 
 function useSkinCard() {
   const nyi = useNyi();
+  const setSkin = useSetAtom(resumeSkinAtom);
 
-  function onClickHandler(img) {
-    nyi();
-    img; // make ts happy
+  function onClickHandler(idx) {
+    // nyi();
+    setSkin(idx);
     // setSkin(s);
   }
 

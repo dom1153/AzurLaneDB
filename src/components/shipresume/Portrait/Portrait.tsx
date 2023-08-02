@@ -1,7 +1,9 @@
-import { Text, Box, Image } from "@chakra-ui/react";
+import { Text, Box, Image, Button } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 import { Ship } from "@azurapi/azurapi/build/types/ship";
 import { BLUR_IMAGE } from "@/hooks/useDevTools";
+
+import ShipModal from "@/components/shipresume/ShipModal/ShipModal";
 
 // leave any portrait display logic here, delegation policy
 // main resume has enough to do
@@ -16,7 +18,10 @@ export function Portrait({ ship, skinId }: PortraitProp) {
 
   return (
     <>
-      <Box position={"relative"}>
+      <Box position={"relative"} h="100%">
+        <Box position={"absolute"} left="0" top="0">
+          <ShipModal />
+        </Box>
         <Image
           src={chibiURL}
           position={"absolute"}
@@ -27,12 +32,11 @@ export function Portrait({ ship, skinId }: PortraitProp) {
         />
         {isFancyPortraitPosition ? (
           <Image
+            boxSize={"100%"}
             src={skinURL}
-            objectFit={"none"}
+            objectFit={"cover"}
             overflow={"unset"}
-            // overflow={"cover"}
             zIndex={"-1000"}
-            align={"center"}
             loading="eager"
           />
         ) : (
@@ -51,7 +55,7 @@ export function Portrait({ ship, skinId }: PortraitProp) {
 function usePortrait(ship: Ship, skinId: number) {
   // need: background url, chibi url, isFancy, and skinURL, based on ship and skin input
 
-  const isFancyPortraitPosition = false;
+  const isFancyPortraitPosition = true;
   const skinURL: string = getSkinUrl(ship, skinId);
   const chibiURL: string = ship.skins[skinId].chibi;
   const bgURL: string = getBGUrl(ship, skinId);
