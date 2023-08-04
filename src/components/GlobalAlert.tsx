@@ -11,31 +11,34 @@ import { isProd, getDevMode, isLocalhost } from "@/hooks/useDevTools";
 
 // for testing new concepts
 export default function GlobalAlert({}) {
-  if (!isLocalhost) return <></>;
   return (
     <>
-      <HStack spacing="">
-        <Alert
-          status={isProd() ? "success" : "info"}
-          alignItems={"center"}
-          textAlign={"center"}
-          zIndex={1000}
-        >
-          <AlertIcon />
-          <AlertTitle>Environment mode:</AlertTitle>
-          <AlertDescription>{getDevMode().toUpperCase()}</AlertDescription>
-        </Alert>
-        <Alert
-          status={"warning"}
-          alignItems={"center"}
-          textAlign={"center"}
-          zIndex={1000}
-        >
-          <AlertIcon />
-          <AlertTitle>Version:</AlertTitle>
-          <AlertDescription>"P.P. Alpha" (pre-pre alpha)</AlertDescription>
-        </Alert>
-      </HStack>
+      {isLocalhost() ? (
+        <HStack spacing="">
+          <Alert
+            status={isProd() ? "success" : "info"}
+            alignItems={"center"}
+            textAlign={"center"}
+            zIndex={1000}
+          >
+            <AlertIcon />
+            <AlertTitle>Environment mode:</AlertTitle>
+            <AlertDescription>{getDevMode().toUpperCase()}</AlertDescription>
+          </Alert>
+          <Alert
+            status={"warning"}
+            alignItems={"center"}
+            textAlign={"center"}
+            zIndex={1000}
+          >
+            <AlertIcon />
+            <AlertTitle>Version:</AlertTitle>
+            <AlertDescription>"P.P. Alpha" (pre-pre alpha)</AlertDescription>
+          </Alert>
+        </HStack>
+      ) : (
+        <></>
+      )}
     </>
   );
 }

@@ -9,6 +9,7 @@ export const isProd = () => import.meta.env.MODE == "production";
 export const isDev = () => !isProd();
 export const getDevMode = () => import.meta.env.MODE;
 export const isLocalhost = () => window.location.href.includes("localhost");
+
 //
 // eventually use typescirpt enum
 export enum MAIN_TAB_NAMES {
