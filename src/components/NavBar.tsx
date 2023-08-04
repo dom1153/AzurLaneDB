@@ -1,28 +1,8 @@
 // import ships from "../../db/ships.json";
-import {
-  Box,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-  Flex,
-  Center,
-} from "@chakra-ui/react";
+import { Box, Flex, Center } from "@chakra-ui/react";
 import { atom, useAtom } from "jotai";
 
-import { DEFAULT_TAB_INDEX, isDev } from "@/hooks/useDevTools";
-import {
-  ENABLE_RESUME,
-  ENABLE_FOO,
-  ENABLE_ARCHIVE,
-  ENABLE_SETTINGS,
-} from "@/hooks/useDevTools";
-
-import ShipArchive from "@/views/ShipArchive";
-import ShipResume from "@/views/ShipResume";
-import Foo from "@/views/Foo";
-import SettingsPanel from "@/views/SettingsPanel";
+import { DEFAULT_TAB_INDEX } from "@/hooks/useDevTools";
 
 export const mainTabIndex: number = DEFAULT_TAB_INDEX;
 export const mainTabIndexAtom = atom(mainTabIndex);

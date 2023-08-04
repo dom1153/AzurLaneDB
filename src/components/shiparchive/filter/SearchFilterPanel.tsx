@@ -6,13 +6,10 @@ import useFilterPanel from "@/hooks/useFilterPanel";
 
 import { scrollbarCss } from "@/hooks/useGlobals";
 
-// <FilterButton onConfirmHandler={filterButtonHandler} />
-
 export default function SearchFilterPanel({ ...theRest }) {
-  const { textSearchHandler, shipListMeta, ships, filterButtonHandler } =
-    useFilterPanel();
+  const { textSearchHandler, shipListMeta, ships } = useFilterPanel();
   return (
-    <Stack w="container.md" overflowY={"auto"} sx={scrollbarCss} h="100%">
+    <Stack overflowY={"auto"} sx={scrollbarCss} h="100%">
       <SearchBox textSearchHandler={textSearchHandler} />
       <TagContainer />
     </Stack>

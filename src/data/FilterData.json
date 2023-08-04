@@ -55,20 +55,42 @@
       { "value": "misc-faction", "type": "check", "label": "Misc" }
     ]
   },
+  "collab": {
+    "label": "Collab",
+    "options": [
+      { "value": "bilibili", "type": "check", "label": "Bilibili" },
+      { "value": "ssss", "type": "check", "label": "SSSS" },
+      {
+        "value": "the-idolmaster",
+        "type": "check",
+        "label": "The Idolmaster"
+      },
+      { "value": "kizuna-ai", "type": "check", "label": "Kizuna AI" },
+      { "value": "neptunia", "type": "check", "label": "Neptunia" },
+      { "value": "utawarerumono", "type": "check", "label": "Utawarerumono" },
+      {
+        "value": "venus-vacation",
+        "type": "check",
+        "label": "Venus Vacation"
+      },
+      { "value": "atelier-ryza", "type": "check", "label": "Atelier Ryza" },
+      { "value": "hololive", "type": "check", "label": "Hololive" }
+    ]
+  },
   "rarity": {
     "label": "Rarity",
     "options": [
-      { "value": "common", "type": "check", "label": "Common" },
+      { "value": "normal", "type": "check", "label": "Common" },
       { "value": "rare", "type": "check", "label": "Rare" },
       { "value": "elite", "type": "check", "label": "Elite" },
-      { "value": "super rare", "type": "check", "label": "Super Rare" },
-      { "value": "ultra", "type": "check", "label": "Ultra" }
+      { "value": "super-rare", "type": "check", "label": "Super Rare" },
+      { "value": "ultra-rare", "type": "check", "label": "Ultra Rare" }
     ]
   },
   "availability": {
     "label": "Availability",
     "options": [
-      { "value": "permanent", "type": "check", "label": "Permanent" },
+      { "value": "permanent", "type": "check", "label": "Standard" },
       { "value": "collab", "type": "check", "label": "Collab" },
       { "value": "priority", "type": "check", "label": "Priority Ships" },
       { "value": "meta", "type": "check", "label": "META" }

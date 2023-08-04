@@ -7,10 +7,16 @@ import { MAIN_TAB_NAMES, isDev } from "@/hooks/useDevTools";
 import { mainTabIndexAtom } from "@components/MainTab";
 import { resumeShipAtom } from "@/hooks/useGlobals";
 
-export default function ShipCard({ ship, displayMode, moreInfo, onClick }) {
+export default function ShipCard({
+  ship,
+  displayMode,
+  moreInfoSort,
+  moreInfoFilter,
+  onClickHandler,
+}) {
   const { shipCardClickHandler, cardColorByRarity } = useShipCard(
     ship,
-    onClick
+    onClickHandler
   );
 
   return (
@@ -31,8 +37,21 @@ export default function ShipCard({ ship, displayMode, moreInfo, onClick }) {
         overflow={"clip"}
         textOverflow={"ellipsis"}
         textAlign={"center"}
+        bgColor={"white"}
+        textColor={"black"}
       >
-        {moreInfo}
+        {moreInfoSort}
+      </Text>
+      <Text
+        whiteSpace={"nowrap"}
+        overflow={"clip"}
+        textOverflow={"ellipsis"}
+        textAlign={"center"}
+        bgColor={"white"}
+        textColor={"black"}
+        fontSize={"xs"}
+      >
+        {moreInfoFilter}
       </Text>
       <Text
         whiteSpace={"nowrap"}
@@ -46,7 +65,7 @@ export default function ShipCard({ ship, displayMode, moreInfo, onClick }) {
   );
 }
 
-function useShipCard(ship: Ship, onClick = null) {
+function useShipCard(ship: Ship, onClickHandler = null) {
   const setShip = useSetAtom(resumeShipAtom);
   const setTab = useSetAtom(mainTabIndexAtom);
 
@@ -79,8 +98,8 @@ function useShipCard(ship: Ship, onClick = null) {
   function shipCardClickHandler(ship: Ship) {
     setShip(ship);
     setTab(MAIN_TAB_NAMES.RESUME);
-    if (onClick) {
-      onClick();
+    if (onClickHandler) {
+      onClickHandler();
     }
   }
 

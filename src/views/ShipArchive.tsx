@@ -1,4 +1,4 @@
-import { HStack, Box, useColorMode } from "@chakra-ui/react";
+import { HStack, Box, useColorMode, Grid } from "@chakra-ui/react";
 import { useAtomValue } from "jotai";
 
 import * as Assets from "@/assets/asset_index";
@@ -22,16 +22,17 @@ export default function ShipArchive() {
         bgSize={"cover"}
         h="100%"
       >
-        <HStack
-          w={"container.lg"}
-          px="2"
-          m="0"
+        <Grid
+          templateColumns={"repeat(2, minmax(10px, 1fr))"}
+          p="2"
           h="100%"
+          w={"container.xl"}
+          maxH="inherit"
           bgColor={colorMode === "light" ? "blue.400" : "gray.800"}
         >
           <SearchFilterPanel />
           <ShipCardGallery shipListMeta={shipCardMeta} />
-        </HStack>
+        </Grid>
       </Box>
     </>
   );

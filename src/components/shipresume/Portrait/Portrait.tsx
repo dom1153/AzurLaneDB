@@ -18,7 +18,7 @@ export function Portrait({ ship, skinId }: PortraitProp) {
 
   return (
     <>
-      <Box position={"relative"} h="100%">
+      <Box position={"relative"} h="100%" maxW={"container.sm"}>
         <Box position={"absolute"} left="0" top="0">
           <ShipModal />
         </Box>
@@ -31,10 +31,14 @@ export function Portrait({ ship, skinId }: PortraitProp) {
           zIndex={3}
         />
         {isFancyPortraitPosition ? (
-          <Image
+          // internally this is unsustainable anyways; use p5 and more complicated methods of offsets
+          // VVV interal (drag click) is stretched 'box size 100%'
+          <Box
+            as="img"
             boxSize={"100%"}
-            src={skinURL}
+            aspectRatio={"1 / 1"}
             objectFit={"cover"}
+            src={skinURL}
             overflow={"unset"}
             zIndex={"-1000"}
             loading="eager"
@@ -43,7 +47,7 @@ export function Portrait({ ship, skinId }: PortraitProp) {
           <Image
             src={skinURL}
             loading="eager"
-            bgImage={bgURL}
+            // bgImage={bgURL}
             filter={BLUR_IMAGE ? "blur(10px)" : ""}
           />
         )}

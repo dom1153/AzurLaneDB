@@ -29,9 +29,10 @@ export default function ShipResume() {
         h="inherit"
       >
         <Grid
-          templateColumns={"repeat( 2, 1fr)"}
+          templateColumns={"repeat(2, minmax(10px, 1fr))"}
           h="inherit"
-          w={"container.lg"}
+          w={"container.xl"}
+          maxH="inherit"
         >
           {ship ? (
             <>

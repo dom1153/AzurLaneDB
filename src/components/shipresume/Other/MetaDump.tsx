@@ -5,7 +5,18 @@ export function MetaDump({ ship }) {
   if (!ship) return <></>;
   return (
     <>
-      <Text as="pre">{str}</Text>
+      <Text
+        as="pre"
+        maxW={"container.sm"}
+        maxH="container.sm"
+        whiteSpace={"pre-wrap"}
+        wordBreak={"break-all"}
+        overflowY={"scroll"}
+        textAlign={"left"}
+        fontSize={"xs"}
+      >
+        {str}
+      </Text>
     </>
   );
 }

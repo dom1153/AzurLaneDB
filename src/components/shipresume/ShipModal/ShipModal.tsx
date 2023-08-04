@@ -49,7 +49,10 @@ export default function ShipModal() {
         >
           <HStack minH="100%" maxH="100%" h="inherit" overflowY={"auto"} p="5">
             <SearchFilterPanel />
-            <ShipCardGallery shipListMeta={shipCardMeta} onClick={onClose} />
+            <ShipCardGallery
+              shipListMeta={shipCardMeta}
+              cardClickHandler={onClose}
+            />
           </HStack>
         </ModalContent>
       </Modal>

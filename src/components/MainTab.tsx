@@ -2,20 +2,7 @@
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 import { atom, useAtom } from "jotai";
 
-import {
-  DEFAULT_TAB_INDEX,
-  DEV_TAB_IDX,
-  MAIN_TAB_NAMES,
-  isDev,
-  isLocalhost,
-  isProd,
-} from "@/hooks/useDevTools";
-import {
-  ENABLE_RESUME,
-  ENABLE_FOO,
-  ENABLE_ARCHIVE,
-  ENABLE_SETTINGS,
-} from "@/hooks/useDevTools";
+import { DEFAULT_TAB_INDEX, isDev } from "@/hooks/useDevTools";
 
 import ShipArchive from "@/views/ShipArchive";
 import ShipResume from "@/views/ShipResume";
@@ -26,7 +13,7 @@ export const mainTabIndex: number = DEFAULT_TAB_INDEX;
 export const mainTabIndexAtom = atom(mainTabIndex);
 
 export default function MainTab({}) {
-  const { tabId, setTabId, panelHeight } = useMainTab();
+  const { tabId, setTabId } = useMainTab();
 
   return (
     <>
@@ -47,13 +34,19 @@ export default function MainTab({}) {
         </TabList>
         <TabPanels flex={"1"} bgColor={"red.100"} overflowY={"auto"}>
           <TabPanel h="100%" p={"0"}>
-            {ENABLE_ARCHIVE && <ShipArchive />}
+            <ShipArchive />
           </TabPanel>
           <TabPanel h="100%" bgColor={"blue.100"} p={"0"}>
-            {ENABLE_RESUME && <ShipResume />}
+            <ShipResume />
           </TabPanel>
-          {isDev() && <TabPanel>{ENABLE_FOO && <Foo />}</TabPanel>}
-          <TabPanel>{ENABLE_SETTINGS && <SettingsPanel />}</TabPanel>
+          {isDev() && (
+            <TabPanel>
+              <Foo />
+            </TabPanel>
+          )}
+          <TabPanel>
+            <SettingsPanel />
+          </TabPanel>
         </TabPanels>
       </Tabs>
     </>
@@ -63,18 +56,8 @@ export default function MainTab({}) {
 function useMainTab() {
   const [tabId, setTabId] = useAtom(mainTabIndexAtom);
 
-  // hehe... magic numbers
-  function panelHeight() {
-    let alertHeight = isLocalhost() ? "48px" : "0px";
-    let tabHeight = "40px";
-    // VVV let it be known there is REQUIRED whitespace between - operator
-    let sum = `calc(100dvh - ${tabHeight} - ${alertHeight})`;
-    return sum;
-  }
-
   return {
     tabId,
     setTabId,
-    panelHeight,
   };
 }

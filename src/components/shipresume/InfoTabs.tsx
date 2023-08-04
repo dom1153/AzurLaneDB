@@ -22,7 +22,7 @@ import { StatCard } from "@components/shipresume/Stat/StatCard";
 export function InfoTabs({ ship }) {
   if (!ship) return <Text>This is empty</Text>;
   return (
-    <Stack>
+    <Stack maxW={"container.sm"} overflowY={"auto"}>
       <Card p={"8px"}>
         <Box position={"absolute"} right="0" top="0">
           <Text>{ship.nationality} (icon)</Text>

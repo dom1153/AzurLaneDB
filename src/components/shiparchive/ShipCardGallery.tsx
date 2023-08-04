@@ -7,16 +7,16 @@ import ShipCard from "@/components/shiparchive/ShipCard";
 
 interface ShipCardGalleryProps {
   shipListMeta: ShipCardMeta[];
-  onClick?: () => void;
+  cardClickHandler?: () => void;
 }
 
 export default function ShipCardGallery({
   shipListMeta,
-  onClick,
+  cardClickHandler,
 }: ShipCardGalleryProps) {
-  const { ShipGrid, NoShipFound, visibleCnt, hasVisible } = useShipCardGallery(
+  const { ShipGrid, NoShipFound, hasVisible } = useShipCardGallery(
     shipListMeta,
-    onClick
+    cardClickHandler
   );
 
   return (
@@ -37,16 +37,10 @@ export default function ShipCardGallery({
   );
 }
 
-function useShipCardGallery(shipListMeta: ShipCardMeta[], onClick) {
-  let [visibleCnt, setVisibleCnt] = useState([]);
-
+function useShipCardGallery(shipListMeta: ShipCardMeta[], cardClickHandler) {
   function hasVisible() {
     return shipListMeta.filter((m) => m.show).length > 0;
   }
-
-  // useEffect(() => {
-  //   setVisibleCnt(shipListMeta.filter((m) => m.show));
-  // }, [shipListMeta]);
 
   function ShipGrid({ shipMetaList }) {
     return (
@@ -57,8 +51,9 @@ function useShipCardGallery(shipListMeta: ShipCardMeta[], onClick) {
               key={meta.ship.id}
               ship={meta.ship}
               displayMode={meta.show}
-              moreInfo={meta.moreInfo}
-              onClick={onClick}
+              moreInfoSort={meta.moreInfoSort}
+              moreInfoFilter={meta.moreInfoFilter}
+              onClickHandler={cardClickHandler}
             />
           );
         })}
@@ -68,7 +63,7 @@ function useShipCardGallery(shipListMeta: ShipCardMeta[], onClick) {
 
   function NoShipFound() {
     return (
-      <Card p={"2"}>
+      <Card p={"2"} maxW={"fit-content"}>
         <Text>{"No ships match criteria"}</Text>
       </Card>
     );
@@ -77,7 +72,6 @@ function useShipCardGallery(shipListMeta: ShipCardMeta[], onClick) {
   return {
     ShipGrid,
     NoShipFound,
-    visibleCnt,
     hasVisible,
   };
 }
