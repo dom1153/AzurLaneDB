@@ -4,7 +4,7 @@ import { Ship } from "@azurapi/azurapi/build/types/ship";
 import Dev from "@/hooks/useDevTools";
 
 import ShipModal from "@/components/shipresume/ShipModal/ShipModal";
-import { Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 // leave any portrait display logic here, delegation policy
 // main resume has enough to do
@@ -61,15 +61,31 @@ export function Portrait({ ship, skinId }: PortraitProp) {
 
 function usePortrait(ship: Ship, skinId: number) {
   // need: background url, chibi url, isFancy, and skinURL, based on ship and skin input
+  const [skinUrl, setSkinUrl] = useState("");
+  const [chibiUrl, setChibiUrl] = useState("");
+  const [bgUrl, setBgUrl] = useState("");
 
   const isFancyPortraitPosition = true;
-  const skinURL: string = getSkinUrl(ship, skinId);
-  const chibiURL: string = ship.skins[skinId].chibi;
-  const bgURL: string = getBGUrl(ship, skinId);
+
+  useEffect(() => {
+    // avoid race condition with skinId being updated too late
+    setSkinUrl(getSkinUrl(ship, skinId));
+    setChibiUrl(ship.skins[skinId].chibi);
+    setBgUrl(getBGUrl(ship, skinId));
+  }, [skinId]);
+
+  useEffect(() => {
+    // man this is dumb...
+    skinId = 0;
+    setSkinUrl(getSkinUrl(ship, skinId));
+    setChibiUrl(ship.skins[skinId].chibi);
+    setBgUrl(getBGUrl(ship, skinId));
+  }, [ship]);
 
   function getSkinUrl(ship: Ship, skinId: number) {
     // can figure out to allow user input... later...
     const skinInfo = ship.skins[skinId];
+    Dev.log(ship.names.en, skinId);
     const hasSkinBG = skinInfo.bg;
     return hasSkinBG ? skinInfo.bg : skinInfo.image;
   }
@@ -80,7 +96,12 @@ function usePortrait(ship: Ship, skinId: number) {
     return skinInfo.background;
   }
 
-  return { skinURL, chibiURL, bgURL, isFancyPortraitPosition };
+  return {
+    skinURL: skinUrl,
+    chibiURL: chibiUrl,
+    bgURL: bgUrl,
+    isFancyPortraitPosition,
+  };
 }
 
 // only editor provides warning
