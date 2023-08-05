@@ -7,11 +7,10 @@ import essexShipResume from "@src/data/essex.json";
 import BasicModal from "@/components/foo/BasicModal";
 import XLModal from "@/components/foo/XLModal";
 import OverflowTest from "@/components/foo/OverflowTest";
-
-import { MAIN_TAB_NAMES } from "@/hooks/useDevTools";
+import FilterBlah from "@/components/foo/FilterBlah";
 
 // for testing new concepts
-export default function Foo({ children }) {
+export default function Foo() {
   useEffect(() => {}, []);
 
   return (
@@ -20,6 +19,7 @@ export default function Foo({ children }) {
         <BasicModal />
         <XLModal />
         <OverflowTest />
+        <FilterBlah />
       </Cha.Stack>
     </>
   );

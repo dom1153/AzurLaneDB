@@ -2,9 +2,9 @@
 import { Box, Flex, Center } from "@chakra-ui/react";
 import { atom, useAtom } from "jotai";
 
-import { DEFAULT_TAB_INDEX } from "@/hooks/useDevTools";
+import Dev from "@/hooks/useDevTools";
 
-export const mainTabIndex: number = DEFAULT_TAB_INDEX;
+export const mainTabIndex: number = Dev.DEFAULT_TAB_INDEX;
 export const mainTabIndexAtom = atom(mainTabIndex);
 
 export default function NavBar({}) {

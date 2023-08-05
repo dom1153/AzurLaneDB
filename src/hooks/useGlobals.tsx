@@ -1,28 +1,27 @@
 import { atom } from "jotai";
 import { Ship } from "@azurapi/azurapi/build/types/ship";
 
-export let shipList: Ship[] = [];
-
-export const fullShipListAtom = atom(shipList);
-
-export const scrollbarCss = {
-  "&::-webkit-scrollbar": {
-    width: "8px",
-  },
-  "&::-webkit-scrollbar-track": {
-    width: "10px",
-  },
-
-  "&::-webkit-scrollbar-thumb": {
-    background: "gold",
-    borderRadius: "24px",
-  },
-};
+import Dev from "@/hooks/useDevTools";
 
 // moving these here instead of shipResume help hmr debugging
-// consider using a store
-const resumeShip: Ship | null = null;
-const resumeSkin: number = 0;
 
-export const resumeShipAtom = atom(resumeShip);
-export const resumeSkinAtom = atom(resumeSkin);
+export default class Globals {
+  static readonly resumeShipAtom = atom(null as Ship);
+  static readonly resumeSkinAtom = atom(0);
+  static readonly fullShipListAtom = atom([] as Ship[]);
+  static readonly mainTabIndexAtom = atom(Dev.DEFAULT_TAB_INDEX);
+
+  static readonly scrollbarCss = {
+    "&::-webkit-scrollbar": {
+      width: "8px",
+    },
+    "&::-webkit-scrollbar-track": {
+      width: "10px",
+    },
+
+    "&::-webkit-scrollbar-thumb": {
+      background: "gold",
+      borderRadius: "24px",
+    },
+  };
+}

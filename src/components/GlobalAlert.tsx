@@ -7,23 +7,25 @@ import {
   AlertDescription,
 } from "@chakra-ui/react";
 
-import { isProd, getDevMode, isLocalhost } from "@/hooks/useDevTools";
+import Dev from "@/hooks/useDevTools";
 
 // for testing new concepts
 export default function GlobalAlert({}) {
   return (
     <>
-      {isLocalhost() ? (
-        <HStack spacing="">
+      {Dev.isLocalhost() ? (
+        <HStack spacing={""}>
           <Alert
-            status={isProd() ? "success" : "info"}
+            status={Dev.isProd() ? "success" : "info"}
             alignItems={"center"}
             textAlign={"center"}
             zIndex={1000}
           >
             <AlertIcon />
             <AlertTitle>Environment mode:</AlertTitle>
-            <AlertDescription>{getDevMode().toUpperCase()}</AlertDescription>
+            <AlertDescription>
+              {Dev.getDevMode().toUpperCase()}
+            </AlertDescription>
           </Alert>
           <Alert
             status={"warning"}

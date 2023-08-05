@@ -30,7 +30,6 @@ import CustomRadioGroup from "@src/components/shiparchive/filter/radio/CustomRad
 import { useEffect, useState } from "react";
 import { atom, useAtom, useAtomValue } from "jotai";
 // import { filterAtom, sortModeAtom } from "@/hooks/useShipArchive";
-import { DEBUG_FILTER_MODAL, isDev } from "@/hooks/useDevTools";
 
 interface FilterParams {
   onConfirm: () => void;
@@ -86,9 +85,7 @@ export default function FilterButton({ onConfirmHandler }) {
     );
   }
 
-  useEffect(() => {
-    if (DEBUG_FILTER_MODAL && isDev()) onOpen();
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <>

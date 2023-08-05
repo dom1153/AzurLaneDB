@@ -1,20 +1,31 @@
-import { Tag, TagLabel, TagRightIcon, useBoolean } from "@chakra-ui/react";
+import { Tag, TagLabel, TagRightIcon } from "@chakra-ui/react";
 import { sortModeAtom, sortDirAtom, filterAtom } from "@/hooks/useFilterPanel";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
 
+type TagOption = {
+  value: string;
+  type: "sort" | "check" | "radio";
+  label: string;
+  checked?: "true" | "false";
+};
+
+interface SingleTagProps {
+  option: TagOption;
+}
+
 // will need a callback or an atom...
-export default function SingleTag({ option }) {
-  const { value, type, label, checked } = option;
+export default function SingleTag({ option }: SingleTagProps) {
   const { isChecked, onClickHandler, dir } = useTag(option);
+
   return (
     <Tag
       as="button"
       colorScheme={isChecked ? "green" : "red"}
       onClick={onClickHandler}
     >
-      <TagLabel>{label}</TagLabel>
+      <TagLabel>{option.label}</TagLabel>
       {option.type === "sort" && isChecked && (
         <TagRightIcon as={dir > 0 ? TriangleUpIcon : TriangleDownIcon} />
       )}
@@ -29,39 +40,21 @@ function useTag(option) {
   const [filters, setFilters] = useAtom(filterAtom);
 
   useEffect(() => {
-    // slow...
-    // console.log("start", option.label, option.checked);
-    // if (option.checked) setIsChecked(true);
-  }, [option]);
-
-  useEffect(() => {
     if (option.type === "sort") {
-      // console.log("sortMode: ", sortMode, option.value);
-      // VVV can't use option.default because of this trait
+      // VVV can't use option.checked because of this trait
       setIsChecked(sortMode === option.value);
     }
   }, [sortMode]);
 
   useEffect(() => {
+    // VVV surely this is ineffecient...
     if (option.type === "check") {
-      // VVV can't use option.default because of this trait
+      // VVV can't use option.checked because of this trait
       setIsChecked(filters[option.value]);
     }
   }, [filters]);
 
   useEffect(() => {}, [filters]);
-
-  // // subscribe to relevant atom
-  // // 'should' work as expected
-  // switch (option.type) {
-  //   case "sort":
-  //     break;
-  //   case "check":
-  //     break;
-  //   case "radio":
-  //     // case not handled yet
-  //     break;
-  // }
 
   function onClickHandler(e) {
     if (option.type == "sort") {
@@ -76,8 +69,6 @@ function useTag(option) {
       setFilters({ ...filters, [option.value]: !isChecked });
     }
   }
-
-  // reset if myvalue == false????? via hook
 
   return { isChecked, onClickHandler, dir };
 }

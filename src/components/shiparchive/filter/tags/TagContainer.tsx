@@ -1,9 +1,6 @@
-import { Box, HStack, Heading, Stack } from "@chakra-ui/react";
-import { atom, useAtomValue } from "jotai";
+import { HStack, Heading, Stack } from "@chakra-ui/react";
 
 import filterData from "@/data/FilterData.json";
-
-import CustomRadioGroup from "@/components/shiparchive/filter/radio/CustomRadioGroup";
 import SingleTag from "@/components/shiparchive/filter/tags/SingleTag";
 
 export default function TagContainer() {

@@ -1,19 +1,16 @@
 // import ships from "../../db/ships.json";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
-import { atom, useAtom } from "jotai";
+import { useAtom } from "jotai";
 
-import { DEFAULT_TAB_INDEX, isDev } from "@/hooks/useDevTools";
-
+import Dev from "@/hooks/useDevTools";
+import Globals from "@/hooks/useGlobals";
 import ShipArchive from "@/views/ShipArchive";
 import ShipResume from "@/views/ShipResume";
 import Foo from "@/views/Foo";
 import SettingsPanel from "@/views/SettingsPanel";
 
-export const mainTabIndex: number = DEFAULT_TAB_INDEX;
-export const mainTabIndexAtom = atom(mainTabIndex);
-
 export default function MainTab({}) {
-  const { tabId, setTabId } = useMainTab();
+  const [tabId, setTabId] = useAtom(Globals.mainTabIndexAtom);
 
   return (
     <>
@@ -29,7 +26,7 @@ export default function MainTab({}) {
         <TabList zIndex={1000}>
           <Tab>Search</Tab>
           <Tab>Details</Tab>
-          {isDev() && <Tab>Test</Tab>}
+          {Dev.isDev() && <Tab>Test</Tab>}
           <Tab>Settings</Tab>
         </TabList>
         <TabPanels flex={"1"} bgColor={"red.100"} overflowY={"auto"}>
@@ -39,7 +36,7 @@ export default function MainTab({}) {
           <TabPanel h="100%" bgColor={"blue.100"} p={"0"}>
             <ShipResume />
           </TabPanel>
-          {isDev() && (
+          {Dev.isDev() && (
             <TabPanel>
               <Foo />
             </TabPanel>
@@ -51,13 +48,4 @@ export default function MainTab({}) {
       </Tabs>
     </>
   );
-}
-
-function useMainTab() {
-  const [tabId, setTabId] = useAtom(mainTabIndexAtom);
-
-  return {
-    tabId,
-    setTabId,
-  };
 }

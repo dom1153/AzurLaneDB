@@ -1,12 +1,12 @@
 import {
-  Box,
   Card,
   Input,
   InputGroup,
   InputRightElement,
   Spinner,
 } from "@chakra-ui/react";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtomValue } from "jotai";
+
 import { searchWaitingAtom } from "@/hooks/useFilterPanel";
 
 export default function SearchBox({ textSearchHandler }) {

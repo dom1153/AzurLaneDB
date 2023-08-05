@@ -1,20 +1,18 @@
 import { Grid, Text, Box } from "@chakra-ui/react";
+import { atom, useAtom, useAtomValue } from "jotai";
+import { useEffect, useState } from "react";
+import useAzurApi from "@/hooks/useAzurApi";
+
+import Globals from "@/hooks/useGlobals";
 import * as AttrIcons from "@/assets/asset_index.js";
 import { InfoTabs } from "@components/shipresume/InfoTabs";
 import { Portrait } from "@components/shipresume/Portrait/Portrait";
 import { Ship } from "@azurapi/azurapi/build/types/ship";
-import { atom, useAtom, useAtomValue } from "jotai";
-import { useEffect } from "react";
-import useAzurApi from "@/hooks/useAzurApi";
-
-const resumeBG: string = AttrIcons.detail_bg_gray;
-
-import { resumeShipAtom, resumeSkinAtom } from "@/hooks/useGlobals";
-
-export const resumeBGAtom = atom(resumeBG);
 
 export default function ShipResume() {
   const { ship, skinId, bgUrl } = useShipResume();
+
+  if (!ship) return <></>;
 
   return (
     <>
@@ -52,9 +50,9 @@ function useShipResume() {
   // leave the resume to handle resume things...
   // outside functions should only just set the ship
 
-  const ship = useAtomValue(resumeShipAtom);
-  const [skinId, setSkinId] = useAtom(resumeSkinAtom);
-  const bgUrl = useAtomValue(resumeBGAtom);
+  const ship = useAtomValue(Globals.resumeShipAtom);
+  const [skinId, setSkinId] = useAtom(Globals.resumeSkinAtom);
+  const [bgUrl, setBgUrl] = useState(AttrIcons.detail_bg_gray);
 
   // TODO: remove; delegate to children
   useEffect(() => {

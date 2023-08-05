@@ -2,10 +2,9 @@ import { Image, Card, Text, Box } from "@chakra-ui/react";
 import { useSetAtom } from "jotai";
 import { Ship } from "@azurapi/azurapi/build/types/ship";
 
-import { MAIN_TAB_NAMES, isDev } from "@/hooks/useDevTools";
+import Dev from "@/hooks/useDevTools";
 
-import { mainTabIndexAtom } from "@components/MainTab";
-import { resumeShipAtom } from "@/hooks/useGlobals";
+import Globals from "@/hooks/useGlobals";
 
 export default function ShipCard({
   ship,
@@ -14,10 +13,8 @@ export default function ShipCard({
   moreInfoFilter,
   onClickHandler,
 }) {
-  const { shipCardClickHandler, cardColorByRarity } = useShipCard(
-    ship,
-    onClickHandler
-  );
+  const { shipCardClickHandler, cardColorByRarity } =
+    useShipCard(onClickHandler);
 
   return (
     <Card
@@ -65,9 +62,9 @@ export default function ShipCard({
   );
 }
 
-function useShipCard(ship: Ship, onClickHandler = null) {
-  const setShip = useSetAtom(resumeShipAtom);
-  const setTab = useSetAtom(mainTabIndexAtom);
+function useShipCard(onClickHandler = null) {
+  const setShip = useSetAtom(Globals.resumeShipAtom);
+  const setTab = useSetAtom(Globals.mainTabIndexAtom);
 
   // passing this directory is faster than setting a state first
   function cardColorByRarity(ship: Ship) {
@@ -87,7 +84,7 @@ function useShipCard(ship: Ship, onClickHandler = null) {
       case "Decisive":
         return "pink.100";
       default:
-        if (isDev()) {
+        if (Dev.isDev()) {
           throw new Error(`Custom: Unknown Ship Rarity: "${ship.rarity}"`);
         }
         return "white";
@@ -97,10 +94,9 @@ function useShipCard(ship: Ship, onClickHandler = null) {
   // TODO: extract this to pass-able if the time comes...
   function shipCardClickHandler(ship: Ship) {
     setShip(ship);
-    setTab(MAIN_TAB_NAMES.RESUME);
-    if (onClickHandler) {
-      onClickHandler();
-    }
+    setTab(Dev.MAIN_TAB_NAMES.RESUME);
+
+    if (onClickHandler) onClickHandler();
   }
 
   return { shipCardClickHandler, cardColorByRarity };

@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Box, Text, Card, Grid } from "@chakra-ui/react";
 
-import { scrollbarCss } from "@/hooks/useGlobals";
+import Globals from "@/hooks/useGlobals";
 import { ShipCardMeta } from "@/hooks/useFilterPanel";
 import ShipCard from "@/components/shiparchive/ShipCard";
+import { numVisibleShipCardsAtom } from "@/hooks/useFilterPanel";
+import { useAtomValue } from "jotai";
 
 interface ShipCardGalleryProps {
   shipListMeta: ShipCardMeta[];
@@ -14,7 +16,7 @@ export default function ShipCardGallery({
   shipListMeta,
   cardClickHandler,
 }: ShipCardGalleryProps) {
-  const { ShipGrid, NoShipFound, hasVisible } = useShipCardGallery(
+  const { ShipGrid, NoShipFound, visibleCnt } = useShipCardGallery(
     shipListMeta,
     cardClickHandler
   );
@@ -25,10 +27,10 @@ export default function ShipCardGallery({
       minH={"100%"}
       maxH="100%"
       overflowY={"auto"}
-      sx={scrollbarCss}
+      sx={Globals.scrollbarCss}
       pt="2"
     >
-      {hasVisible() ? (
+      {visibleCnt > 0 ? (
         <ShipGrid shipMetaList={shipListMeta} />
       ) : (
         <NoShipFound />
@@ -38,9 +40,9 @@ export default function ShipCardGallery({
 }
 
 function useShipCardGallery(shipListMeta: ShipCardMeta[], cardClickHandler) {
-  function hasVisible() {
-    return shipListMeta.filter((m) => m.show).length > 0;
-  }
+  const visibleCnt = useAtomValue(numVisibleShipCardsAtom);
+
+  useEffect(() => {}, [shipListMeta]);
 
   function ShipGrid({ shipMetaList }) {
     return (
@@ -72,6 +74,6 @@ function useShipCardGallery(shipListMeta: ShipCardMeta[], cardClickHandler) {
   return {
     ShipGrid,
     NoShipFound,
-    hasVisible,
+    visibleCnt,
   };
 }

@@ -1,16 +1,14 @@
-import { HStack, Box, useColorMode, Grid } from "@chakra-ui/react";
+import { Box, useColorMode, Grid } from "@chakra-ui/react";
 import { useAtomValue } from "jotai";
 
 import * as Assets from "@/assets/asset_index";
-
 import { visibleShipCardsAtom } from "@/hooks/useFilterPanel";
-
 import SearchFilterPanel from "@components/shiparchive/filter/SearchFilterPanel";
 import ShipCardGallery from "@components/shiparchive/ShipCardGallery";
 
 export default function ShipArchive() {
-  let shipCardMeta = useAtomValue(visibleShipCardsAtom);
-  const { colorMode, toggleColorMode } = useColorMode();
+  const shipCardMeta = useAtomValue(visibleShipCardsAtom);
+  const { colorMode } = useColorMode();
 
   return (
     <>

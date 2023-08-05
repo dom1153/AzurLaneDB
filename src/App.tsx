@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 import { Flex } from "@chakra-ui/react";
 
+import Dev from "./hooks/useDevTools";
 import useAzurApi from "@/hooks/useAzurApi";
-
 import GlobalAlert from "@components/GlobalAlert";
 import MainTab from "@components/MainTab";
 
-function App() {
+export default function App() {
   const {} = useApp();
 
   return (
@@ -21,18 +21,20 @@ function useApp() {
   const { getDb } = useAzurApi();
 
   useEffect(() => {
+    Dev.log("==========");
+    Dev.log("App begins");
+    Dev.log("==========");
     getDb();
   }, []);
 
   if (import.meta.hot) {
-    // state data is reset on HMR so this should fix it. for debugging only
     import.meta.hot.on("vite:afterUpdate", () => {
-      console.log("hot reload!");
       getDb();
+      Dev.log("===========================");
+      Dev.log("App || vite:afterUpdate HMR");
+      Dev.log("===========================");
     });
   }
 
   return {};
 }
-
-export default App;

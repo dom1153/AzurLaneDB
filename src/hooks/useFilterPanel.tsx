@@ -3,10 +3,8 @@ import { atom, useAtom } from "jotai";
 import { useAtomValue } from "jotai";
 import { Ship } from "@azurapi/azurapi/build/types/ship";
 
-import { fullShipListAtom } from "@/hooks/useGlobals";
-import { isDev, isLocalhost, useNyi } from "./useDevTools";
-import filterData from "@/data/FilterData.json";
-import { cookieStorageManager } from "@chakra-ui/react";
+import Globals from "@/hooks/useGlobals";
+import Dev from "@/hooks/useDevTools";
 
 export interface ShipCardMeta {
   ship: Ship;
@@ -27,8 +25,6 @@ const RarityMap = {
   Decisive: 4,
 };
 
-let debugMap = {};
-
 export const filterAtom = atom({});
 export const sortModeAtom = atom("id");
 export const sortDirAtom = atom(1); // 1 or -1
@@ -36,37 +32,49 @@ const searchTermAtom = atom(""); // hardcoded for now
 // id: visible
 export const visibleShipCardsAtom = atom([] as ShipCardMeta[]);
 export const searchWaitingAtom = atom(false);
+export const numVisibleShipCardsAtom = atom(0);
 
 let searchDelayTimeout;
 // VVV dev mode is SLOW so set bigger timeout
-let searchDelay = isDev() ? 500 : 100;
+let searchDelay = Dev.isDev() ? 500 : 100;
 
 export default function useFilterPanel() {
-  const ships = useAtomValue(fullShipListAtom);
+  const ships = useAtomValue(Globals.fullShipListAtom);
   const [filters, setFilters] = useAtom(filterAtom);
   const [sortMode, setSortMode] = useAtom(sortModeAtom);
   const [sortDir, setSorDir] = useAtom(sortDirAtom);
   const [searchTerm, setSearchTerm] = useAtom(searchTermAtom);
   const [shipListMeta, setShipListMeta] = useAtom(visibleShipCardsAtom);
   const [searchWaiting, setSearchWaiting] = useAtom(searchWaitingAtom);
-  const nyiToast = useNyi();
+  const [visibleCnt, setVisibleCnt] = useAtom(numVisibleShipCardsAtom);
+  const nyiToast = Dev.useNyi();
+
   useEffect(() => {
+    Dev.log("useFilterPanel || useEffect[ships] called");
     setShipListMeta(getFullVisibleShipCardList());
   }, [ships]);
 
   useEffect(() => {
-    setSearchWaiting(true);
-    if (searchDelayTimeout) {
-      clearTimeout(searchDelayTimeout);
-    }
-    searchDelayTimeout = setTimeout(doStuff, searchDelay);
+    if (ships) {
+      Dev.log("useFilterPanel || useEffect[filters...] called");
+      setSearchWaiting(true);
+      if (searchDelayTimeout) {
+        clearTimeout(searchDelayTimeout);
+      }
+      searchDelayTimeout = setTimeout(doStuff, searchDelay);
 
-    function doStuff() {
-      setSearchWaiting(false);
-      searchSortFilterShips(searchTerm, sortMode, filters);
+      function doStuff() {
+        setSearchWaiting(false);
+        searchSortFilterShips(searchTerm, sortMode, filters);
+      }
     }
-    // console.log(filters);
   }, [filters, sortMode, sortDir]);
+
+  useEffect(() => {
+    let visibleCnt = shipListMeta.filter((m) => m.show).length;
+    Dev.log("shipListMeta updated: ", visibleCnt);
+    setVisibleCnt(visibleCnt);
+  }, [shipListMeta]);
 
   function getFullVisibleShipCardList() {
     return ships.map((s) => ({ ship: s, show: true } as ShipCardMeta));
@@ -99,6 +107,11 @@ export default function useFilterPanel() {
     sortMode: string,
     filters: {}
   ) {
+    if (ships.length <= 0) return;
+    Dev.log("useFilterPanel || searchSortFilterShips");
+    Dev.groupCollapsed(1);
+    Dev.log("ship len: ", ships.length);
+
     // === NYI check
     if (!sortFn[sortMode] || !moreInfoFn[sortMode]) {
       nyiToast(sortMode);
@@ -116,19 +129,26 @@ export default function useFilterPanel() {
     // === begin
 
     let hasFilters = Object.values(filters).includes(true);
+    Dev.log("hasFilters", hasFilters, filters);
     let lst = hasFilters
       ? getInVisibleShipCardList()
       : getFullVisibleShipCardList(); // reset list
+    Dev.log("lst A: ", lst.filter((m) => m.show).length);
 
     Object.entries(filters).forEach((kv) => {
       const [k, v] = kv;
       if (v) lst = filterByOther(k, lst);
     });
 
+    Dev.log("lst B: ", lst.filter((m) => m.show).length);
     lst = filterByShipName(inputStr, lst);
+    Dev.log("lst C: ", lst.filter((m) => m.show).length);
     lst = sortShipList(sortMode, lst);
+    Dev.log("lst D: ", lst.filter((m) => m.show).length);
 
     setShipListMeta(lst);
+    Dev.log("lst: E", lst.filter((m) => m.show).length);
+    Dev.groupEnd(1);
   }
 
   // input: search param, list
@@ -377,5 +397,5 @@ export default function useFilterPanel() {
     return { ...meta, ship: meta.ship, show: true };
   }
 
-  return { textSearchHandler, shipListMeta, ships };
+  return { textSearchHandler };
 }

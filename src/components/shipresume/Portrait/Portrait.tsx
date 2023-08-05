@@ -1,9 +1,10 @@
 import { Text, Box, Image, Button } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 import { Ship } from "@azurapi/azurapi/build/types/ship";
-import { BLUR_IMAGE } from "@/hooks/useDevTools";
+import Dev from "@/hooks/useDevTools";
 
 import ShipModal from "@/components/shipresume/ShipModal/ShipModal";
+import { Suspense } from "react";
 
 // leave any portrait display logic here, delegation policy
 // main resume has enough to do
@@ -33,22 +34,24 @@ export function Portrait({ ship, skinId }: PortraitProp) {
         {isFancyPortraitPosition ? (
           // internally this is unsustainable anyways; use p5 and more complicated methods of offsets
           // VVV interal (drag click) is stretched 'box size 100%'
-          <Box
-            as="img"
-            boxSize={"100%"}
-            aspectRatio={"1 / 1"}
-            objectFit={"cover"}
-            src={skinURL}
-            overflow={"unset"}
-            zIndex={"-1000"}
-            loading="eager"
-          />
+          <Suspense fallback={<Text>Loading...</Text>}>
+            <Box
+              as="img"
+              boxSize={"100%"}
+              aspectRatio={"1 / 1"}
+              objectFit={"cover"}
+              src={skinURL}
+              overflow={"unset"}
+              zIndex={"-1000"}
+              loading="eager"
+            />
+          </Suspense>
         ) : (
           <Image
             src={skinURL}
             loading="eager"
             // bgImage={bgURL}
-            filter={BLUR_IMAGE ? "blur(10px)" : ""}
+            filter={Dev.BLUR_IMAGE ? "blur(10px)" : ""}
           />
         )}
       </Box>
