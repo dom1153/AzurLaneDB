@@ -1,6 +1,5 @@
 import Dev from "@/hooks/useDevTools";
 import Globals from "@/hooks/useGlobals";
-import { FixedSizeGrid } from "react-window";
 import { Ship } from "@azurapi/azurapi/build/types/ship";
 import {
   Box,
@@ -268,8 +267,8 @@ function HeaderTagCombo({
 }
 
 interface SingleTagProps {
-  option: {};
-  defaultValue: "true" | "" | null;
+  option: { label: string };
+  defaultValue: "true" | "" | null | boolean;
   onChange: (e) => void;
 }
 const SingleTag: FC<SingleTagProps> = memo(function SingleTag({
