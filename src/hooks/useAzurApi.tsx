@@ -35,7 +35,9 @@ export default function useAzurApi() {
           if (a.id > b.id) return 1;
           return 0;
         });
+
         setFullShipList(ships);
+        // setFullShipList(ships.slice(0, 300));
         Dev.log("useAzurApi || Retrieved full ship list");
 
         // set default resume ship

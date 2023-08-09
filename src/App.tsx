@@ -12,7 +12,7 @@ export default function App() {
   return (
     <Flex className="App" flexDir="column" h="100vh">
       <GlobalAlert />
-      <MainTab />
+      {true && <MainTab />}
     </Flex>
   );
 }

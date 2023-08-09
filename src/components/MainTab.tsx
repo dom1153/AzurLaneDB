@@ -8,6 +8,7 @@ import ShipArchive from "@/views/ShipArchive";
 import ShipResume from "@/views/ShipResume";
 import Foo from "@/views/Foo";
 import SettingsPanel from "@/views/SettingsPanel";
+import Browser from "@/views/Browser";
 
 export default function MainTab({}) {
   const [tabId, setTabId] = useAtom(Globals.mainTabIndexAtom);
@@ -31,10 +32,11 @@ export default function MainTab({}) {
         </TabList>
         <TabPanels flex={"1"} bgColor={"red.100"} overflowY={"auto"}>
           <TabPanel h="100%" p={"0"}>
-            <ShipArchive />
+            {false && <ShipArchive />}
+            {true && <Browser />}
           </TabPanel>
           <TabPanel h="100%" bgColor={"blue.100"} p={"0"}>
-            <ShipResume />
+            {false && <ShipResume />}
           </TabPanel>
           {Dev.isDev() && (
             <TabPanel>

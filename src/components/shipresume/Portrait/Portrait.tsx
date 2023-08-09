@@ -85,7 +85,6 @@ function usePortrait(ship: Ship, skinId: number) {
   function getSkinUrl(ship: Ship, skinId: number) {
     // can figure out to allow user input... later...
     const skinInfo = ship.skins[skinId];
-    Dev.log(ship.names.en, skinId);
     const hasSkinBG = skinInfo.bg;
     return hasSkinBG ? skinInfo.bg : skinInfo.image;
   }

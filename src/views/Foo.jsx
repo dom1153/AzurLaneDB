@@ -8,6 +8,8 @@ import BasicModal from "@/components/foo/BasicModal";
 import XLModal from "@/components/foo/XLModal";
 import OverflowTest from "@/components/foo/OverflowTest";
 import FilterBlah from "@/components/foo/FilterBlah";
+import FlagFilter from "@/components/foo/FlagFilter";
+import SlowListApp from "@/components/foo/SlowListApp";
 
 // for testing new concepts
 export default function Foo() {
@@ -16,10 +18,12 @@ export default function Foo() {
   return (
     <>
       <Cha.Stack>
-        <BasicModal />
-        <XLModal />
-        <OverflowTest />
-        <FilterBlah />
+        {false && <BasicModal />}
+        {false && <XLModal />}
+        {false && <OverflowTest />}
+        {false && <FilterBlah />}
+        {false && <FlagFilter />}
+        {true && <SlowListApp />}
       </Cha.Stack>
     </>
   );
