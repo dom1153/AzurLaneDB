@@ -36,16 +36,14 @@ export default function MainTab({}) {
             {true && <Browser />}
           </TabPanel>
           <TabPanel h="100%" bgColor={"blue.100"} p={"0"}>
-            {false && <ShipResume />}
+            {true && <ShipResume />}
           </TabPanel>
           {Dev.isDev() && (
             <TabPanel>
               <Foo />
             </TabPanel>
           )}
-          <TabPanel>
-            <SettingsPanel />
-          </TabPanel>
+          <TabPanel>{Dev.isDev() && <SettingsPanel />}</TabPanel>
         </TabPanels>
       </Tabs>
     </>

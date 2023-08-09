@@ -20,7 +20,7 @@ import {
   Text,
   Tooltip,
 } from "@chakra-ui/react";
-import { atom, useAtom, useAtomValue } from "jotai";
+import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 import {
   FC,
   Suspense,
@@ -44,7 +44,7 @@ const searchParam = [
   "names",
 ];
 
-export default function Browser() {
+const Browser = memo(function Browser() {
   const [searchTerm, setSearchTerm] = useState("");
   const deferredSearchTerm = useDeferredValue(searchTerm);
   const [searchTags, setSearchTags] = useState({});
@@ -91,7 +91,7 @@ export default function Browser() {
       </Box>
     </>
   );
-}
+});
 
 function SearchPanel({
   searchTerm,
@@ -341,11 +341,18 @@ const ShipCard: FC<ShipCardProps> = memo(function ShipCard({
   searchTerm,
 }) {
   const doH = useAtomValue(HAtom);
+  const setShip = useSetAtom(Globals.resumeShipAtom);
+  const setTab = useSetAtom(Globals.mainTabIndexAtom);
 
   return (
     // // Note: tooltip has poor performance ; probably due to ref issues
     <Tooltip label={ship.names.en} hasArrow key={ship.id}>
-      <Card>
+      <Card
+        onClick={() => {
+          setShip(ship);
+          setTab(Dev.MAIN_TAB_NAMES.RESUME);
+        }}
+      >
         <Image src={ship.thumbnail} />
         <Text
           noOfLines={1}
@@ -457,3 +464,5 @@ function initDefaultFilterParam() {
   );
   return options;
 }
+
+export default Browser;
