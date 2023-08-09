@@ -28,7 +28,7 @@ export default function MainTab({}) {
           <Tab>Search</Tab>
           <Tab>Details</Tab>
           {Dev.isDev() && <Tab>Test</Tab>}
-          <Tab>Settings</Tab>
+          {Dev.isDev() && <Tab>Settings</Tab>}
         </TabList>
         <TabPanels flex={"1"} bgColor={"red.100"} overflowY={"auto"}>
           <TabPanel h="100%" p={"0"}>
