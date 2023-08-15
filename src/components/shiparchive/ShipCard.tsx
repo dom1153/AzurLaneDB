@@ -68,27 +68,28 @@ function useShipCard(onClickHandler = null) {
 
   // passing this directory is faster than setting a state first
   function cardColorByRarity(ship: Ship) {
-    switch (ship.rarity as ShipRarity) {
-      case "Normal":
-      case "Common":
-        return "gray.100";
-      case "Rare":
-        return "blue.100";
-      case "Elite":
-      case "Epic":
-        return "purple.100";
-      case "Super Rare":
-      case "Priority":
-        return "yellow.100";
-      case "Ultra Rare":
-      case "Decisive":
-        return "pink.100";
-      default:
-        if (Dev.isDev()) {
-          throw new Error(`Custom: Unknown Ship Rarity: "${ship.rarity}"`);
-        }
-        return "white";
-    }
+    // switch (ship.rarity) {
+    //   case "Normal":
+    //   case "Common":
+    //     return "gray.100";
+    //   case "Rare":
+    //     return "blue.100";
+    //   case "Elite":
+    //   case "Epic":
+    //     return "purple.100";
+    //   case "Super Rare":
+    //   case "Priority":
+    //     return "yellow.100";
+    //   case "Ultra Rare":
+    //   case "Decisive":
+    //     return "pink.100";
+    //   default:
+    //     if (Dev.isDev()) {
+    //       throw new Error(`Custom: Unknown Ship Rarity: "${ship.rarity}"`);
+    //     }
+    //     return "white";
+    // }
+    return "white";
   }
 
   // TODO: extract this to pass-able if the time comes...

@@ -10,6 +10,7 @@ import {
   Text,
   Box,
   Card,
+  Link,
 } from "@chakra-ui/react";
 
 import { MetaDump } from "@components/shipresume/Other/MetaDump";
@@ -18,8 +19,13 @@ import { SkinGallery } from "@components/shipresume/Skin/SkinGallery";
 import { ArtworkGallery } from "@components/shipresume/Artwork/ArtworkGallery";
 import { SkillGallery } from "@components/shipresume/Skill/SkillGallery";
 import { StatCard } from "@components/shipresume/Stat/StatCard";
+import { Ship } from "@azurapi/azurapi/build/types/ship";
 
-export function InfoTabs({ ship }) {
+type InfoTabProps = {
+  ship: Ship;
+};
+
+export function InfoTabs({ ship }: InfoTabProps) {
   if (!ship) return <Text>This is empty</Text>;
   return (
     <Stack maxW={"container.sm"} overflowY={"auto"}>
@@ -27,7 +33,10 @@ export function InfoTabs({ ship }) {
         <Box position={"absolute"} right="0" top="0">
           <Text>{ship.nationality} (icon)</Text>
         </Box>
-        <Heading>{ship.names.en}</Heading>
+        <Link href={ship.wikiUrl} isExternal>
+          <Heading>{ship.names.en}</Heading>
+        </Link>
+
         <Stack>
           <StatCard header="Rarity" body={ship.rarity} />
           <HStack>
@@ -43,8 +52,8 @@ export function InfoTabs({ ship }) {
           <TabList>
             <Tab>Stats</Tab>
             <Tab>Skills</Tab>
-            <Tab>Gallery</Tab>
-            <Tab>Skins</Tab>
+            <Tab>Gallery {`(${ship.gallery.length})`}</Tab>
+            <Tab>Skins {`(${ship.skins.length})`}</Tab>
             <Tab>More Info</Tab>
             <Tab>Meta (debug)</Tab>
           </TabList>
@@ -64,7 +73,9 @@ export function InfoTabs({ ship }) {
             <TabPanel>
               <SkinGallery ship={ship} />
             </TabPanel>
-            <TabPanel>Put stuff about the skin and credits here</TabPanel>
+            <TabPanel>
+              <MoreInfo ship={ship} />
+            </TabPanel>
             <TabPanel>
               <MetaDump ship={ship} />
             </TabPanel>
@@ -72,5 +83,47 @@ export function InfoTabs({ ship }) {
         </Tabs>
       </Card>
     </Stack>
+  );
+}
+
+function MoreInfo({ ship }) {
+  if (!ship) return <></>;
+  let artists = <></>;
+  let voice = <></>;
+  if (ship.hasOwnProperty("misc")) {
+    if (ship.misc.hasOwnProperty("artist"))
+      artists = (
+        <StatCard
+          header={"Artist"}
+          body={
+            <HStack>
+              <Text>{ship.misc.artist.name}</Text>
+              {Object.entries(ship.misc.artist.urls).map((kv) => (
+                <Link href={kv[1] as string}>{kv[0]}</Link>
+              ))}
+            </HStack>
+          }
+        />
+      );
+    if (ship.misc.hasOwnProperty("voice"))
+      voice = (
+        <StatCard
+          header={"Voice Actor"}
+          body={
+            <HStack>
+              <Link href={ship.misc.voice.url}>{ship.misc.voice.name}</Link>
+            </HStack>
+          }
+        />
+      );
+  }
+
+  return (
+    <>
+      <Stack>
+        {artists}
+        {voice}
+      </Stack>
+    </>
   );
 }

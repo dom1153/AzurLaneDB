@@ -2,9 +2,12 @@ import Dev from "@/hooks/useDevTools";
 import Globals from "@/hooks/useGlobals";
 import { Ship } from "@azurapi/azurapi/build/types/ship";
 import {
+  Badge,
   Box,
   Card,
+  Center,
   Checkbox,
+  Flex,
   Grid,
   HStack,
   Heading,
@@ -31,6 +34,7 @@ import {
 } from "react";
 
 import filterData from "@/data/FilterData.json";
+import AzurApiUtils from "@/utils/azurApiUtils";
 
 const HAtom = atom(true);
 const ENABLE_SEARCH_TAGS = true;
@@ -43,6 +47,18 @@ const searchParam = [
   // "skills",
   "names",
 ];
+
+const RarityMap = {
+  Normal: 0,
+  Common: 0,
+  Rare: 1,
+  Elite: 2,
+  Epic: 2,
+  "Super Rare": 3,
+  Priority: 3,
+  "Ultra Rare": 4,
+  Decisive: 4,
+};
 
 const Browser = memo(function Browser() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -72,7 +88,7 @@ const Browser = memo(function Browser() {
           w={"container.xl"}
           maxW={"container.xl"}
           minW={"container.xl"}
-          bgColor={"blue.100"}
+          bgColor={"gray.400"}
           h="100%"
           maxH="inherit"
         >
@@ -311,7 +327,7 @@ const CardGallery: FC<CardGalleryProps> = function CardGallery({
   return (
     <>
       <Box overflowY={"auto"} h="100%" sx={Globals.scrollbarCss} px="2">
-        <Grid templateColumns={"repeat(6, 1fr)"} gap={6}>
+        <Grid templateColumns={"repeat(5, 1fr)"} gap={6}>
           {/* {filterShips().map((ship: Ship) => (
             <ShipCard ship={ship} searchTerm={searchTerm} />
           ))} */}
@@ -353,8 +369,60 @@ const ShipCard: FC<ShipCardProps> = memo(function ShipCard({
           setTab(Dev.MAIN_TAB_NAMES.RESUME);
         }}
       >
-        <Image src={ship.thumbnail} />
-        <Text
+        <Box
+          position={"relative"}
+          bgColor={AzurApiUtils.cardColorByRarity(ship).replace("1", "2")}
+          borderWidth={"5px 0px 5px 0px"}
+          borderColor={"blue blue red blue"}
+          borderTopColor={AzurApiUtils.cardColorByRarity(ship)}
+          borderBottomColor={AzurApiUtils.cardColorByRarity(ship)}
+          borderLeftColor={"black"}
+          borderRightColor={"black"}
+          borderRadius={"lg"}
+        >
+          <Flex
+            bgColor={"blackAlpha.700"}
+            w={"100%"}
+            position={"absolute"}
+            top={"0"}
+            left={"0"}
+            justifyContent={"space-between"}
+          >
+            <Badge colorScheme="blue">
+              {AzurApiUtils.hullTypeToShortName(ship)}
+            </Badge>
+            <Badge colorScheme="whiteAlpha">
+              {AzurApiUtils.factionToShortName(ship)}
+            </Badge>
+          </Flex>
+          <Image src={ship.thumbnail} />
+          <Flex
+            bgColor={"blackAlpha.700"}
+            w={"100%"}
+            position={"absolute"}
+            bottom={"10px"}
+            left={"0"}
+            justifyItems={"center"}
+            alignItems={"center"}
+          >
+            <Text
+              flex={"1"}
+              as="b"
+              color={"white"}
+              noOfLines={1}
+              fontSize={"sm"}
+            >
+              <Highlight
+                query={doH ? searchTerm : ""}
+                styles={{ bg: "orange.100" }}
+              >
+                {ship.names.en}
+              </Highlight>
+            </Text>
+          </Flex>
+        </Box>
+
+        {/* <Text
           noOfLines={1}
           // fontSize={ship.names.en.length > 8 ? "xs" : "md"}
         >
@@ -364,14 +432,18 @@ const ShipCard: FC<ShipCardProps> = memo(function ShipCard({
           >
             {ship.names.en}
           </Highlight>
-        </Text>
+        </Text> */}
       </Card>
     </Tooltip>
   );
 });
 
 function filterShips_global(ships: Ship[], searchTerm) {
+  // determinte what to do based on filters
+  // hasHull, hasFaction, hasCollab, hasRarity, hasAvailability, hasSpecial
   return ships.filter((item: Ship) => {
+    // highg priority (and filtering)
+    // low priority (or filtering)
     // todo add filtering
     return searchParam.some((param) => {
       switch (param) {
@@ -464,5 +536,146 @@ function initDefaultFilterParam() {
   );
   return options;
 }
+
+// === BEGIN IMPORT CODE
+
+const filterFn = {
+  shipName: (ship: Ship, name) => ship.names.en.toLowerCase().includes(name),
+  main: (ship: Ship) =>
+    filterFn.bb(ship) || filterFn.cv(ship) || filterFn.ar(ship),
+  vanguard: (ship: Ship) =>
+    filterFn.dd(ship) || filterFn.cl(ship) || filterFn.ca(ship),
+  dd: (ship: Ship) => compareString(ship.hullType, "destroyer"),
+  cl: (ship: Ship) => compareString(ship.hullType, "light cruiser"),
+  ca: (ship: Ship) =>
+    compareString(ship.hullType, "heavy cruiser") ||
+    compareString(ship.hullType, "large cruiser"),
+  bb: (ship: Ship) =>
+    compareString(ship.hullType, "battlecruiser") ||
+    compareString(ship.hullType, "battleship"),
+  cv: (ship: Ship) =>
+    compareString(ship.hullType, "aircraft carrier") ||
+    compareString(ship.hullType, "Light Carrier"),
+  ar: (ship: Ship) => compareString(ship.hullType, "repair"),
+  ss: (ship: Ship) =>
+    compareString(ship.hullType, "submarine") ||
+    compareString(ship.hullType, "submarine carrier"),
+  "misc-hull": (ship: Ship) =>
+    !(filterFn.main(ship) || filterFn.vanguard(ship) || filterFn.ss(ship)),
+  // === faction
+  bilibili: (ship: Ship) => compareString(ship.nationality, "Bilibili"),
+  "royal-navy": (ship: Ship) => compareString(ship.nationality, "Royal Navy"),
+  "sakura-empire": (ship: Ship) =>
+    compareString(ship.nationality, "Sakura Empire"),
+  "iron-blood": (ship: Ship) => compareString(ship.nationality, "Iron Blood"),
+  ssss: (ship: Ship) => compareString(ship.nationality, "SSSS"),
+  "eagle-union": (ship: Ship) => compareString(ship.nationality, "Eagle Union"),
+  "sardegna-empire": (ship: Ship) =>
+    compareString(ship.nationality, "Sardegna Empire"),
+  "vichya-dominion": (ship: Ship) =>
+    compareString(ship.nationality, "Vichya Dominion"),
+  "the-idolmaster": (ship: Ship) =>
+    compareString(ship.nationality, "The Idolmaster"),
+  "dragon-empery": (ship: Ship) =>
+    compareString(ship.nationality, "Dragon Empery"),
+  "kizuna-ai": (ship: Ship) => compareString(ship.nationality, "Kizuna AI"),
+  meta: (ship: Ship) => compareString(ship.nationality, "META"),
+  "northern-parliament": (ship: Ship) =>
+    compareString(ship.nationality, "Northern Parliament"),
+  neptunia: (ship: Ship) => compareString(ship.nationality, "Neptunia"),
+  "iris-libre": (ship: Ship) => compareString(ship.nationality, "Iris Libre"),
+  utawarerumono: (ship: Ship) =>
+    compareString(ship.nationality, "Utawarerumono"),
+  "venus-vacation": (ship: Ship) =>
+    compareString(ship.nationality, "Venus Vacation"),
+  "atelier-ryza": (ship: Ship) =>
+    compareString(ship.nationality, "Atelier Ryza"),
+  hololive: (ship: Ship) => compareString(ship.nationality, "Hololive"),
+  universal: (ship: Ship) => compareString(ship.nationality, "Universal"),
+  tempesta: (ship: Ship) => compareString(ship.nationality, "Tempesta"),
+  "misc-faction": (ship: Ship) =>
+    compareString(ship.nationality, "universal") ||
+    compareString(ship.nationality, "tempesta"),
+  elite: (ship: Ship) => compareString(ship.rarity, "Elite"),
+  normal: (ship: Ship) => compareString(ship.rarity, "Normal"),
+  rare: (ship: Ship) => compareString(ship.rarity, "Rare"),
+  "super-rare": (ship: Ship) =>
+    compareString(ship.rarity, "Super Rare") ||
+    compareString(ship.rarity, "Priority"),
+  "ultra-rare": (ship: Ship) =>
+    compareString(ship.rarity, "Ultra Rare") ||
+    compareString(ship.rarity, "Decisive"),
+  collab: (ship: Ship) => isCollab(ship),
+  priority: (ship: Ship) =>
+    compareString(ship.construction.constructionTime, "research"),
+  permanent: (ship: Ship) =>
+    !(filterFn.collab(ship) || filterFn.priority(ship) || filterFn.meta(ship)),
+  "has-skin": (ship: Ship) => ship.skins.length > 1,
+  "has-oath-skin": (ship: Ship) =>
+    ship.skins.some((skin) => compareString(skin.name, "wedding")),
+  "has-retrofit": (ship: Ship) => ship.retrofit,
+};
+
+function compareString(a, b) {
+  return a.toLowerCase() === b.toLowerCase();
+}
+
+function isCollab(m: Ship) {
+  return (
+    filterFn.bilibili(m) ||
+    filterFn.ssss(m) ||
+    filterFn["the-idolmaster"](m) ||
+    filterFn["kizuna-ai"](m) ||
+    filterFn.neptunia(m) ||
+    filterFn.utawarerumono(m) ||
+    filterFn["venus-vacation"](m) ||
+    filterFn["atelier-ryza"](m) ||
+    filterFn.hololive(m)
+  );
+}
+
+// map to "value" of sort "option" from filterData.json
+const sortFn = {
+  id: (a: Ship, b: Ship) => a.id.localeCompare(b.id),
+  name: (a: Ship, b: Ship) => a.names.en.localeCompare(b.names.en),
+  rarity: (a: Ship, b: Ship) => RarityMap[a.rarity] - RarityMap[b.rarity],
+  "total-stats": (a: Ship, b: Ship) => sumStats(a) - sumStats(b),
+  "construction-time": (a: Ship, b: Ship) =>
+    parseConstructionTime(a) - parseConstructionTime(b),
+};
+
+// this calculation is probably wrong compared to to ingame value
+function sumStats(ship: Ship) {
+  return Object.values(ship.stats.level120).reduce((accum: any, current: any) =>
+    isNaN(current) ? accum : parseInt(accum) + parseInt(current)
+  );
+}
+
+function parseConstructionTime(ship: Ship) {
+  let time = ship.construction.constructionTime;
+  let timeNoColon = time;
+  timeNoColon.replaceAll(":", "");
+  let num = parseInt(timeNoColon);
+  if (Number.isNaN(num)) {
+    switch (time.toLowerCase()) {
+      case "Cannot Be Construced".toLowerCase():
+        return 999999;
+      case "Cannot be constructed".toLowerCase():
+        return 999999 + 1;
+      case "Drop Only".toLowerCase():
+        return 999999 + 2;
+      case "Research".toLowerCase():
+        return 999999 + 3;
+      case "":
+        return 999999 + 4;
+      default:
+        return 999999 + 5;
+    }
+  }
+
+  return num;
+}
+
+// === END IMPORT CODE
 
 export default Browser;

@@ -10,13 +10,21 @@ ReadShipJson: // this is a jump but we're gonna use it for code organization
 let debugMap = {
     debug: {
         nation: {},
-        rarity: {}
+        rarity: {},
+        hullType: {},
+        oddShortCode: {},
+        shortCode: {},
+        voiceActors: {},
+        illustrators: {},
     },
     ui: {
         nation: {
             options: []
         },
         rarity: {
+            options: []
+        },
+        hullType: {
             options: []
         }
     },
@@ -26,6 +34,10 @@ let debugMap = {
             moreInfo: {}
         },
         rarity: {
+            options: {},
+            moreInfo: {}
+        },
+        hullType: {
             options: {},
             moreInfo: {}
         }
@@ -38,6 +50,36 @@ DoStuff:
     shipJson.forEach((s) => {
         debugMap.debug.nation[s.nationality] = s.names.en
         debugMap.debug.rarity[s.rarity] = s.names.en
+        debugMap.debug.hullType[s.hullType] = s.names.en
+        let meta = {}
+        if (s.misc.artist) {
+            meta.artist = [s.misc.artist.name, s.misc.artist.urls]
+        }
+        if (s.misc.voice) {
+            meta.voice = [s.misc.voice.name, s.misc.voice.url]
+        }
+        debugMap.debug.illustrators[s.names.en] = meta
+
+        // artist ?: Artist;
+        // web ?: Artist;
+        // pixiv ?: Artist;
+        // twitter ?: Artist;
+        // voice ?: Artist;)
+
+        if (s.names.code) {
+            let code = s.names.code
+            let firstWord = code.substr(0, code.indexOf(" "));
+            if ([...firstWord].some((c) => c.toLowerCase() === c) || firstWord === "") {
+                // console.log("odd name:", s.names.code, s.nationality)
+                debugMap.debug.oddShortCode[s.nationality] = s.names.code
+            } else {
+                if (firstWord === "")
+                    console.log(firstWord, s.names.code)
+                debugMap.debug.shortCode[firstWord] = s.names.code
+            }
+        } else {
+            console.log("error on ", s.names.en)
+        }
     })
     Object.keys(debugMap.debug.nation).forEach((k) => {
         let dashed = k.replaceAll(" ", "-").toLowerCase()
@@ -60,6 +102,17 @@ DoStuff:
             })
         debugMap["fn"]["rarity"]["options"][k.replaceAll(" ", "-").toLowerCase()] = `(meta: ShipCardMeta) => compareString(meta.ship.rarity, '${k}')`
         debugMap["fn"]["rarity"]["moreInfo"][k.replaceAll(" ", "-").toLowerCase()] = `(a: Ship) => a.rarity`
+    })
+    Object.keys(debugMap.debug.hullType).forEach((k) => {
+        let dashed = k.replaceAll(" ", "-").toLowerCase()
+        debugMap["ui"]["hullType"]["options"].push(
+            {
+                "value": dashed,
+                "type": "check",
+                "label": k
+            })
+        debugMap["fn"]["hullType"]["options"][k.replaceAll(" ", "-").toLowerCase()] = `(meta: ShipCardMeta) => compareString(meta.ship.hullType, '${k}')`
+        debugMap["fn"]["hullType"]["moreInfo"][k.replaceAll(" ", "-").toLowerCase()] = `(a: Ship) => a.hullType`
     })
 
 
