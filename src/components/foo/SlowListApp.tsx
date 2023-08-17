@@ -1,4 +1,4 @@
-import { FC, memo, useDeferredValue, useState, Suspense } from "react";
+import { FC, memo, useDeferredValue, useState } from "react";
 
 export default function SlowListApp() {
   const [text, setText] = useState("");

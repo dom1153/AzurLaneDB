@@ -28,9 +28,13 @@ export default function MainTab({}) {
           <Tab>Search</Tab>
           <Tab>Details</Tab>
           {Dev.isDev() && <Tab>Test</Tab>}
-          {Dev.isDev() && <Tab>Settings</Tab>}
+          {Dev.isLocalhost() && <Tab>Settings</Tab>}
         </TabList>
-        <TabPanels flex={"1"} bgColor={"red.100"} overflowY={"auto"}>
+        <TabPanels
+          flex={"1"}
+          bgColor={Dev.isDev() ? "red.100" : ""}
+          overflowY={"auto"}
+        >
           <TabPanel h="100%" p={"0"}>
             {false && <ShipArchive />}
             {true && <Browser />}
@@ -43,7 +47,7 @@ export default function MainTab({}) {
               <Foo />
             </TabPanel>
           )}
-          <TabPanel>{Dev.isDev() && <SettingsPanel />}</TabPanel>
+          <TabPanel>{Dev.isLocalhost() && <SettingsPanel />}</TabPanel>
         </TabPanels>
       </Tabs>
     </>

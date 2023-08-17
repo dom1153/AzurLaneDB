@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
+import { Stack } from "@chakra-ui/react";
 // VVV ugly af but great for testing!!! jaja
-import * as Cha from "@chakra-ui/react";
 
 import essexShipResume from "@src/data/essex.json";
 
@@ -17,14 +17,14 @@ export default function Foo() {
 
   return (
     <>
-      <Cha.Stack>
+      <Stack>
         {false && <BasicModal />}
         {false && <XLModal />}
         {false && <OverflowTest />}
         {false && <FilterBlah />}
         {false && <FlagFilter />}
         {true && <SlowListApp />}
-      </Cha.Stack>
+      </Stack>
     </>
   );
 }

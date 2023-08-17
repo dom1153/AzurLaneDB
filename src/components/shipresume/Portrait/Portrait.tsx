@@ -9,20 +9,29 @@ import { Suspense, useEffect, useState } from "react";
 // leave any portrait display logic here, delegation policy
 // main resume has enough to do
 // if need be allow param override
-export function Portrait({ ship, skinId }: PortraitProp) {
+export function Portrait({
+  ship,
+  skinId,
+  useSecretaryBg = false,
+  useSkinBg = false,
+}: PortraitProp) {
   if (!ship) return <Text>Empty</Text>;
 
   const { skinURL, chibiURL, bgURL, isFancyPortraitPosition } = usePortrait(
     ship,
-    skinId
+    skinId,
+    useSecretaryBg,
+    useSkinBg
   );
 
   return (
     <>
       <Box position={"relative"} h="100%" maxW={"container.sm"}>
-        <Box position={"absolute"} left="0" top="0">
-          <ShipModal />
-        </Box>
+        {Dev.isDev() && (
+          <Box position={"absolute"} left="0" top="0">
+            <ShipModal />
+          </Box>
+        )}
         <Image
           src={chibiURL}
           position={"absolute"}
@@ -34,18 +43,16 @@ export function Portrait({ ship, skinId }: PortraitProp) {
         {isFancyPortraitPosition ? (
           // internally this is unsustainable anyways; use p5 and more complicated methods of offsets
           // VVV interal (drag click) is stretched 'box size 100%'
-          <Suspense fallback={<Text>Loading...</Text>}>
-            <Box
-              as="img"
-              boxSize={"100%"}
-              aspectRatio={"1 / 1"}
-              objectFit={"cover"}
-              src={skinURL}
-              overflow={"unset"}
-              zIndex={"-1000"}
-              loading="eager"
-            />
-          </Suspense>
+          <Box
+            as="img"
+            boxSize={"100%"}
+            // aspectRatio={"1 / 1"}
+            objectFit={"cover"}
+            src={skinURL}
+            overflow={"unset"}
+            zIndex={"-1000"}
+            loading="eager"
+          />
         ) : (
           <Image
             src={skinURL}
@@ -59,7 +66,12 @@ export function Portrait({ ship, skinId }: PortraitProp) {
   );
 }
 
-function usePortrait(ship: Ship, skinId: number) {
+function usePortrait(
+  ship: Ship,
+  skinId: number,
+  useSecretaryBg: boolean,
+  useSkinBg: boolean
+) {
   // need: background url, chibi url, isFancy, and skinURL, based on ship and skin input
   const [skinUrl, setSkinUrl] = useState("");
   const [chibiUrl, setChibiUrl] = useState("");
@@ -72,7 +84,7 @@ function usePortrait(ship: Ship, skinId: number) {
     setSkinUrl(getSkinUrl(ship, skinId));
     setChibiUrl(ship.skins[skinId].chibi);
     setBgUrl(getBGUrl(ship, skinId));
-  }, [skinId]);
+  }, [skinId, useSkinBg, useSecretaryBg]);
 
   useEffect(() => {
     // man this is dumb...
@@ -85,8 +97,7 @@ function usePortrait(ship: Ship, skinId: number) {
   function getSkinUrl(ship: Ship, skinId: number) {
     // can figure out to allow user input... later...
     const skinInfo = ship.skins[skinId];
-    const hasSkinBG = skinInfo.bg;
-    return hasSkinBG ? skinInfo.bg : skinInfo.image;
+    return skinInfo.bg && useSkinBg ? skinInfo.bg : skinInfo.image;
   }
 
   function getBGUrl(ship: Ship, skinId: number) {
@@ -107,6 +118,8 @@ function usePortrait(ship: Ship, skinId: number) {
 interface PortraitProp {
   ship: Ship;
   skinId: number;
+  useSecretaryBg: boolean;
+  useSkinBg: boolean;
 }
 
 // can provide runtime warnings! :3

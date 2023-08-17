@@ -33,7 +33,7 @@ import detail_bg_gay_card from "@/assets/bg/star_level_card_5.png"
 import detail_bg_gay_pr_card from "@/assets/bg/star_level_card_5_pr.png"
 import detail_bg_gold_pr_card from "@/assets/bg/star_level_card_4_pr.png"
 
-export {
+let Assets = {
     attr_aa,
     attr_armor,
     attr_asw,
@@ -62,3 +62,5 @@ export {
     detail_bg_gay_pr_card,
     detail_bg_gold_pr_card,
 };
+
+export default Assets

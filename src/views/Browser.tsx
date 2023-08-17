@@ -20,21 +20,19 @@ import {
   Stack,
   Tag,
   TagLabel,
+  TagRightIcon,
   Text,
   Tooltip,
+  useColorMode,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
-import {
-  FC,
-  Suspense,
-  memo,
-  useDeferredValue,
-  useEffect,
-  useState,
-} from "react";
+import { FC, memo, useDeferredValue, useEffect, useState } from "react";
 
 import filterData from "@/data/FilterData.json";
 import AzurApiUtils from "@/utils/azurApiUtils";
+import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
+import Assets from "@assets/asset_index";
 
 const HAtom = atom(true);
 const ENABLE_SEARCH_TAGS = true;
@@ -67,8 +65,18 @@ const Browser = memo(function Browser() {
   const [filterParam, setFilterParam] = useState(initFilterParam());
   // maybe slow...
   const deferredFilterParam = useDeferredValue(filterParam);
-  const [defaultFilterParam] = useState(initDefaultFilterParam());
+  const [recentFilter, setRecentFilter] = useState("");
+  const deferredRecentFilter = useDeferredValue(recentFilter);
+  const [searchHighlight, setSearchHighlight] = useState(false);
+  const deferredSearchHighlight = useDeferredValue(searchHighlight);
+  const [cardDetails, setCardDetails] = useState(false);
+  const deferredCardDetails = useDeferredValue(cardDetails);
+  const [DoH, setDoH] = useState(true);
+  const deferredDoH = useDeferredValue(DoH);
+
+  // const [defaultFilterParam] = useState(initDefaultFilterParam());
   const ships = useAtomValue(Globals.fullShipListAtom);
+  // const { colorMode } = useColorMode();
 
   function searchCallBack(searchText) {
     setSearchTerm(searchText); // first priority... (maybe move to end)
@@ -80,7 +88,15 @@ const Browser = memo(function Browser() {
 
   return (
     <>
-      <Box h="100%">
+      <Box
+        h="100%"
+        bgImage={Assets.technology_bg}
+        bgPosition="center"
+        bgRepeat="no-repeat"
+        bgSize={"cover"}
+        bgColor={"gray.700"}
+        p="2"
+      >
         <Grid
           templateColumns={"repeat(2, minmax(10px, 1fr))"}
           gap={"2"}
@@ -88,7 +104,7 @@ const Browser = memo(function Browser() {
           w={"container.xl"}
           maxW={"container.xl"}
           minW={"container.xl"}
-          bgColor={"gray.400"}
+          bgColor={Dev.isDev() ? "gray.400" : ""}
           h="100%"
           maxH="inherit"
         >
@@ -99,10 +115,24 @@ const Browser = memo(function Browser() {
             searchTags={searchTags}
             filterParam={filterParam}
             setFilterParam={setFilterParam}
-            defaultFilterParam={defaultFilterParam}
+            setRecentFilter={setRecentFilter}
             ships={ships}
+            setEnableSearchTags={setSearchHighlight}
+            enableSearchTags={deferredSearchHighlight}
+            cardDetails={deferredCardDetails}
+            setCardDetails={setCardDetails}
+            DoH={deferredDoH}
+            setDoH={setDoH}
           />
-          <CardGallery searchTerm={deferredSearchTerm} ships={ships} />
+          <CardGallery
+            searchTerm={deferredSearchTerm}
+            ships={ships}
+            filterParam={deferredFilterParam}
+            recentFilter={deferredRecentFilter}
+            allowSearchTag={deferredSearchHighlight}
+            allowShipDetail={deferredCardDetails}
+            doH={deferredDoH}
+          />
         </Grid>
       </Box>
     </>
@@ -116,53 +146,77 @@ function SearchPanel({
   searchTags,
   filterParam,
   setFilterParam,
-  defaultFilterParam,
+  setRecentFilter,
   ships,
+  setEnableSearchTags,
+  enableSearchTags,
+  cardDetails,
+  setCardDetails,
+  setDoH,
+  DoH,
 }) {
-  const [doH, setH] = useAtom(HAtom);
   const [dummy, setDummy] = useState(false);
 
   return (
     <>
-      <Stack>
-        <SearchBox searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-
-        <Input placeholder="Dummy search box" bg={"gray.100"} />
-
-        <Card bg={"white"} p="1">
-          <Checkbox isChecked={doH} onChange={(e) => setH(e.target.checked)}>
-            Highlight search term
-          </Checkbox>
-        </Card>
-
-        {/* VVV Performance testing */}
-        {ENABLE_SEARCH_TAGS && (
-          <SearchGeneratedTags
-            searchTags={searchTags}
-            searchTerm={slowSearchTerm}
-            doH={doH}
-            ships={ships}
+      <Card p="2" bg={useColorModeValue("gray.300", "gray.900")}>
+        <Stack>
+          <SearchBox searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+          <Input
+            placeholder="Dummy search box"
+            bg={useColorModeValue("gray.100", "gray.900")}
           />
-        )}
-
-        {ENABLE_FILTER_TAGS && (
-          <FilterTags
-            filterParam={filterParam}
-            setFilterParam={setFilterParam}
-            defaultFilterParam={defaultFilterParam}
-          />
-        )}
-
-        <Box>
-          <Tag
-            as="button"
-            colorScheme={dummy ? "purple" : "pink"}
-            onClick={() => setDummy(!dummy)}
-          >
-            Test
-          </Tag>
-        </Box>
-      </Stack>
+          <Card bg={useColorModeValue("white", "")} p="1">
+            <Checkbox
+              isChecked={DoH}
+              onChange={(e) => setDoH(e.target.checked)}
+            >
+              Highlight search term
+            </Checkbox>
+            <Checkbox
+              isChecked={enableSearchTags}
+              onChange={(e) => setEnableSearchTags(e.target.checked)}
+            >
+              Allow search by tag
+            </Checkbox>
+            <Checkbox
+              isChecked={cardDetails}
+              onChange={(e) => setCardDetails(e.target.checked)}
+            >
+              Show details on ship card
+            </Checkbox>
+            {Dev.isDev() && <Checkbox>Dummy Checkbox</Checkbox>}
+          </Card>
+          {/* VVV Performance testing */}
+          {ENABLE_SEARCH_TAGS && enableSearchTags && (
+            <SearchGeneratedTags
+              searchTags={searchTags}
+              searchTerm={slowSearchTerm}
+              doH={DoH}
+              ships={ships}
+            />
+          )}
+          {ENABLE_FILTER_TAGS && (
+            <FilterTags
+              filterParam={filterParam}
+              setFilterParam={setFilterParam}
+              setRecentFilter={setRecentFilter}
+              // defaultFilterParam={defaultFilterParam}
+            />
+          )}
+          {Dev.isDev() && (
+            <Box>
+              <Tag
+                as="button"
+                colorScheme={dummy ? "purple" : "pink"}
+                onClick={() => setDummy(!dummy)}
+              >
+                Test
+              </Tag>
+            </Box>
+          )}
+        </Stack>
+      </Card>
     </>
   );
 }
@@ -176,7 +230,7 @@ function SearchBox({ searchTerm, setSearchTerm }) {
         onChange={(e) => {
           setSearchTerm(e.target.value);
         }}
-        bg={"white"}
+        bg={useColorModeValue("white", "")}
       />
       <InputRightElement>
         <Spinner display={false ? "auto" : "none"} />
@@ -231,19 +285,22 @@ const SearchGenTag: FC<SearchGenTagProps> = memo(function SearchGenTag({
   );
 });
 
-function FilterTags({ filterParam, setFilterParam, defaultFilterParam }) {
+function FilterTags({ filterParam, setFilterParam, setRecentFilter }) {
   return (
     <>
       <Stack>
-        {Object.values(filterData).map((section) => (
-          <HeaderTagCombo
-            key={`section_${section.label}`}
-            data={section}
-            filterParam={filterParam}
-            setFilterParam={setFilterParam}
-            defaultFilterParam={defaultFilterParam}
-          />
-        ))}
+        {Object.entries(filterData).map((kv) => {
+          let [k, v] = kv;
+          return (
+            <HeaderTagCombo
+              key={`section_${v.label}`}
+              data={kv}
+              filterParam={filterParam}
+              setFilterParam={setFilterParam}
+              setRecentFilter={setRecentFilter}
+            />
+          );
+        })}
       </Stack>
     </>
   );
@@ -253,29 +310,49 @@ function HeaderTagCombo({
   data,
   filterParam,
   setFilterParam,
-  defaultFilterParam,
+  setRecentFilter,
 }) {
+  let [skey, svalue] = data;
+
   return (
     <>
       <Stack>
         <Heading textAlign={"left"} size={"md"}>
-          {data.label}
+          {svalue.label}
         </Heading>
         <HStack flexWrap={"wrap"}>
-          {data.options.map((option) => (
-            // <Text key={option.value}>{option.label}</Text>
-            <SingleTag
-              key={option.value}
-              option={option}
-              defaultValue={defaultFilterParam[option.value]}
-              onChange={(e) =>
-                setFilterParam({
-                  ...filterParam,
-                  [option.value]: e,
-                })
-              }
-            />
-          ))}
+          {svalue.options.map((option) =>
+            skey === "sort" ? (
+              <SortTag
+                key={option.value}
+                option={option}
+                value={filterParam[skey]}
+                sortDir={filterParam["sortDir"]}
+                onChange={(e, dir) => {
+                  setFilterParam({
+                    ...filterParam,
+                    [skey]: e,
+                    ["sortDir"]: dir,
+                  });
+                  setRecentFilter(option.value);
+                }}
+              />
+            ) : (
+              // <Text key={option.value}>{option.label}</Text>
+              <SingleTag
+                key={option.value}
+                option={option}
+                defaultValue={filterParam[skey][option.value]}
+                onChange={(e) => {
+                  setFilterParam({
+                    ...filterParam,
+                    [skey]: { ...filterParam[skey], [option.value]: e },
+                  });
+                  setRecentFilter(option.value);
+                }}
+              />
+            )
+          )}
         </HStack>
       </Stack>
     </>
@@ -283,26 +360,66 @@ function HeaderTagCombo({
 }
 
 interface SingleTagProps {
-  option: { label: string };
+  option: { label: string; value: string; type: string };
   defaultValue: "true" | "" | null | boolean;
   onChange: (e) => void;
 }
+
+interface SortTagProps {
+  option: { label: string; value: string; type: string };
+  value: string;
+  onChange: (e, dir) => void;
+  sortDir: number;
+}
+
+const SortTag: FC<SortTagProps> = memo(
+  ({ option, value, onChange, sortDir }) => {
+    let nyiToast = Dev.useNyi();
+    const check = value === option.value;
+    return (
+      <>
+        <Tag
+          as="button"
+          colorScheme={value === option.value ? "blue" : "gray"}
+          onClick={() => {
+            if (!sortFn[option.value]) {
+              nyiToast(option.label);
+              return;
+            }
+            onChange(option.value, check ? sortDir * -1 : 1);
+          }}
+        >
+          {option.label}
+          {check && (
+            <TagRightIcon
+              as={sortDir < 0 ? TriangleUpIcon : TriangleDownIcon}
+            />
+          )}
+        </Tag>
+      </>
+    );
+  }
+);
+
 const SingleTag: FC<SingleTagProps> = memo(function SingleTag({
   option,
   defaultValue,
   onChange,
 }) {
+  let nyiToast = Dev.useNyi();
   const [check, setCheck] = useState(defaultValue);
-  // console.log(option);
   return (
     <>
       <Tag
         as="button"
-        colorScheme={check ? "green" : "red"}
+        colorScheme={check ? "blue" : "gray"}
         onClick={() => {
+          if (!filterFn[option.value]) {
+            nyiToast(option.label);
+            return;
+          }
           setCheck(!check);
           onChange(!check);
-          // onChange(!checked);
         }}
       >
         {option.label}
@@ -311,36 +428,51 @@ const SingleTag: FC<SingleTagProps> = memo(function SingleTag({
   );
 });
 
-// given a word "brest" ; find it, return b<b>rest</b>t
 interface CardGalleryProps {
   searchTerm: string;
   ships: Ship[];
+  filterParam: {};
+  recentFilter: string;
+  allowSearchTag: boolean;
+  allowShipDetail: boolean;
+  doH: boolean;
 }
 
 const CardGallery: FC<CardGalleryProps> = function CardGallery({
   searchTerm,
   ships,
+  filterParam,
+  recentFilter,
+  allowSearchTag,
+  allowShipDetail,
+  doH,
 }) {
   // can be extracted, but not in parent function...
-  let items = filterShips_global(ships, searchTerm);
+
+  let items = filterShips_global(
+    ships,
+    searchTerm,
+    allowSearchTag,
+    filterParam
+  );
 
   return (
     <>
       <Box overflowY={"auto"} h="100%" sx={Globals.scrollbarCss} px="2">
         <Grid templateColumns={"repeat(5, 1fr)"} gap={6}>
-          {/* {filterShips().map((ship: Ship) => (
-            <ShipCard ship={ship} searchTerm={searchTerm} />
-          ))} */}
           {items.map((ship: Ship) => (
-            <ShipCard key={ship.id} ship={ship} searchTerm={searchTerm} />
+            <ShipCard
+              key={ship.id}
+              ship={ship}
+              searchTerm={searchTerm}
+              extraText={
+                allowShipDetail && moreInfoFn[recentFilter]
+                  ? moreInfoFn[recentFilter](ship)
+                  : ""
+              }
+              doH={doH}
+            />
           ))}
-          {/* {ships
-              .filter((item: Ship) => {
-                return includesString(item.names.en, searchTerm);
-              })
-              .map((ship: Ship) => (
-                <ShipCard ship={ship} />
-              ))} */}
         </Grid>
       </Box>
     </>
@@ -349,78 +481,123 @@ const CardGallery: FC<CardGalleryProps> = function CardGallery({
 
 interface ShipCardProps {
   ship: Ship;
-  searchTerm: string;
+  searchTerm?: string;
+  extraText?: string;
+  doH?: boolean;
 }
 
-const ShipCard: FC<ShipCardProps> = memo(function ShipCard({
-  ship,
-  searchTerm,
-}) {
-  const doH = useAtomValue(HAtom);
-  const setShip = useSetAtom(Globals.resumeShipAtom);
-  const setTab = useSetAtom(Globals.mainTabIndexAtom);
-
+const EmptyShipCard = memo(() => {
   return (
-    // // Note: tooltip has poor performance ; probably due to ref issues
-    <Tooltip label={ship.names.en} hasArrow key={ship.id}>
+    <Card
+      position={"relative"}
+      bgColor={Dev.isDev() ? "gray.100" : ""}
+      borderWidth={"5px 0px 5px 0px"}
+      borderColor={"gray.100"}
+      borderRadius={"lg"}
+    >
+      <Image src="https://placehold.co/102x135" />
+    </Card>
+  );
+});
+
+const ShipCard: FC<ShipCardProps> = memo(
+  ({ ship, searchTerm, extraText = "", doH = false }) => {
+    const setShip = useSetAtom(Globals.resumeShipAtom);
+    const setTab = useSetAtom(Globals.mainTabIndexAtom);
+
+    return (
+      // // Note: tooltip has poor performance ; probably due to ref issues
+      // <Tooltip label={ship.names.en} hasArrow key={ship.id}>
       <Card
         onClick={() => {
           setShip(ship);
           setTab(Dev.MAIN_TAB_NAMES.RESUME);
         }}
+        position={"relative"}
+        // bgColor={AzurApiUtils.cardColorByRarity(ship).replace("1", "2")}
+        bgColor={"gray.500"}
+        borderWidth={"5px 1px 5px 1px"}
+        bgImage={AzurApiUtils.cardBgByRarity(ship)}
+        bgSize={"cover"}
+        borderTopColor={AzurApiUtils.cardColorByRarity(ship)}
+        borderBottomColor={AzurApiUtils.cardColorByRarity(ship)}
+        borderLeftColor={"gray.500"}
+        borderRightColor={"gray.500"}
+        borderRadius={"lg"}
       >
-        <Box
-          position={"relative"}
-          bgColor={AzurApiUtils.cardColorByRarity(ship).replace("1", "2")}
-          borderWidth={"5px 0px 5px 0px"}
-          borderColor={"blue blue red blue"}
-          borderTopColor={AzurApiUtils.cardColorByRarity(ship)}
-          borderBottomColor={AzurApiUtils.cardColorByRarity(ship)}
-          borderLeftColor={"black"}
-          borderRightColor={"black"}
-          borderRadius={"lg"}
+        <Flex
+          bgColor={"blackAlpha.700"}
+          w={"100%"}
+          position={"absolute"}
+          top={"0"}
+          left={"0"}
+          justifyContent={"space-between"}
         >
+          <Badge colorScheme="blue">
+            {AzurApiUtils.hullTypeToShortName(ship)}
+          </Badge>
+          <Badge colorScheme="whiteAlpha">
+            {AzurApiUtils.factionToShortName(ship)}
+          </Badge>
+        </Flex>
+        <Image
+          src={ship.thumbnail}
+          opacity={100}
+          loading="lazy"
+          fallbackSrc="fallbackSrc='https://via.placeholder.com/102x133'"
+        />
+        {
           <Flex
             bgColor={"blackAlpha.700"}
             w={"100%"}
             position={"absolute"}
-            top={"0"}
-            left={"0"}
-            justifyContent={"space-between"}
-          >
-            <Badge colorScheme="blue">
-              {AzurApiUtils.hullTypeToShortName(ship)}
-            </Badge>
-            <Badge colorScheme="whiteAlpha">
-              {AzurApiUtils.factionToShortName(ship)}
-            </Badge>
-          </Flex>
-          <Image src={ship.thumbnail} />
-          <Flex
-            bgColor={"blackAlpha.700"}
-            w={"100%"}
-            position={"absolute"}
-            bottom={"10px"}
+            bottom={"40%"}
             left={"0"}
             justifyItems={"center"}
             alignItems={"center"}
+            h="1.75rem"
+            display={extraText !== "" ? "flex" : "none"}
           >
             <Text
               flex={"1"}
               as="b"
               color={"white"}
-              noOfLines={1}
-              fontSize={"sm"}
+              noOfLines={isLongName(ship) ? 2 : 1}
+              fontSize={isLongName(ship) ? "0.75rem" : ".875rem"}
+              lineHeight={"none"}
+              overflowWrap={"break-word"}
             >
-              <Highlight
-                query={doH ? searchTerm : ""}
-                styles={{ bg: "orange.100" }}
-              >
-                {ship.names.en}
-              </Highlight>
+              {extraText}
             </Text>
           </Flex>
-        </Box>
+        }
+        <Flex
+          bgColor={"blackAlpha.700"}
+          w={"100%"}
+          position={"absolute"}
+          bottom={"10px"}
+          left={"0"}
+          justifyItems={"center"}
+          alignItems={"center"}
+          h="1.75rem"
+        >
+          <Text
+            flex={"1"}
+            as="b"
+            color={"white"}
+            noOfLines={isLongName(ship) ? 2 : 1}
+            fontSize={isLongName(ship) ? "0.75rem" : ".875rem"}
+            lineHeight={"none"}
+            overflowWrap={"break-word"}
+          >
+            <Highlight
+              query={doH ? searchTerm : ""}
+              styles={{ bg: "orange.100" }}
+            >
+              {ship.names.en}
+            </Highlight>
+          </Text>
+        </Flex>
 
         {/* <Text
           noOfLines={1}
@@ -434,31 +611,80 @@ const ShipCard: FC<ShipCardProps> = memo(function ShipCard({
           </Highlight>
         </Text> */}
       </Card>
-    </Tooltip>
-  );
-});
+      // </Tooltip>
+    );
+  }
+);
 
-function filterShips_global(ships: Ship[], searchTerm) {
-  // determinte what to do based on filters
-  // hasHull, hasFaction, hasCollab, hasRarity, hasAvailability, hasSpecial
-  return ships.filter((item: Ship) => {
-    // highg priority (and filtering)
-    // low priority (or filtering)
-    // todo add filtering
-    return searchParam.some((param) => {
-      switch (param) {
-        case "names":
-          return includesString(item.names.en, searchTerm);
-        case "skills":
-        // return item.skills.some((skill) =>
-        //   includesString(skill.names.en, searchTerm)
-        // );
-        default:
-          return includesString(item[param].toString(), searchTerm);
+function isLongName(ship: Ship) {
+  return ship.names.en.length > 10;
+}
+
+function filterShips_global(
+  ships: Ship[],
+  searchTerm: string,
+  allowTags: boolean,
+  filterParam: {}
+) {
+  // build filter list
+
+  let filters = {};
+  Object.entries(filterParam).forEach((skv) => {
+    let [sk, sv] = skv;
+    if (typeof sv === "boolean") {
+    } else if (typeof sv === "string") {
+    } else {
+      filters[sk] = [];
+      let allfalse = true,
+        alltrue = true;
+      // keep it simple for now...
+      if (sk === "sort") return; // not a filter
+      if (sk === "collab") sk = "faction"; // collab is alias of faction
+      Object.entries(sv).forEach((kv) => {
+        let [k, v] = kv;
+        if (v) {
+          if (!filterFn[k]) return;
+          filters[sk].push(filterFn[k]);
+        }
+      });
+    }
+  });
+
+  let filteredShips = ships.filter((item: Ship) => {
+    let show = true;
+    Object.keys(filters).forEach((category) => {
+      if (!show) return;
+      let hasMatch = true;
+      if (filters[category].length > 0) {
+        hasMatch = filters[category].some((fn) => {
+          return fn(item);
+        });
       }
+      if (!hasMatch) show = false;
     });
+    if (!show) return false;
+
+    if (allowTags) {
+      return searchParam.some((param) => {
+        switch (param) {
+          case "names":
+            return includesString(item.names.en, searchTerm);
+          case "skills":
+          // return item.skills.some((skill) =>
+          //   includesString(skill.names.en, searchTerm)
+          // );
+          default:
+            return includesString(item[param].toString(), searchTerm);
+        }
+      });
+    }
+
     return includesString(item.names.en, searchTerm);
   });
+  filteredShips.sort(
+    (a, b) => sortFn[filterParam["sort"]](a, b) * filterParam["sortDir"]
+  );
+  return filteredShips;
 }
 
 function genSearchTags_global(ships, searchText) {
@@ -498,9 +724,7 @@ function genSearchTags_global(ships, searchText) {
       }
     });
   });
-  // Dev.log("Tag: ", tags);
   return tags;
-  // setSearchTags(tags);
 }
 
 function captilize(str) {
@@ -516,31 +740,38 @@ function includesString(a: string, b: string) {
 }
 
 function initFilterParam() {
-  let options = {};
-  Object.values(filterData).forEach((section) =>
-    section.options.forEach((option) => {
-      options[option.value] = false;
-    })
-  );
-  return options;
-}
+  let groupedOptions = {};
+  Object.entries(filterData).forEach((skv) => {
+    let [sk, sv]: [string, any] = skv;
 
-function initDefaultFilterParam() {
-  let options = {};
-  Object.values(filterData).forEach((section) =>
-    section.options.forEach((option) => {
-      options[option.value] = option.checked
-        ? equalString(option.checked, "true")
-        : false;
-    })
-  );
-  return options;
-}
+    let options: string | {} = {};
+    if (sk === "sort") {
+      let defaultSort = "";
+      for (let i = 0; i < sv.options.length; i++) {
+        if (
+          sv.options[i].hasOwnProperty("checked") &&
+          sv.options[i].checked === "true"
+        ) {
+          defaultSort = sv.options[i].value;
+          break;
+        }
+      }
+      options = defaultSort;
+    } else {
+      sv.options.forEach((option) => {
+        options[option.value] = option.checked === "true";
+      });
+    }
 
-// === BEGIN IMPORT CODE
+    groupedOptions[sk] = options;
+    groupedOptions["sortDir"] = 1;
+  });
+  return groupedOptions;
+}
 
 const filterFn = {
-  shipName: (ship: Ship, name) => ship.names.en.toLowerCase().includes(name),
+  shipName: (ship: Ship, name) =>
+    ship.names.en.toLowerCase().normalize("NFC").includes(name),
   main: (ship: Ship) =>
     filterFn.bb(ship) || filterFn.cv(ship) || filterFn.ar(ship),
   vanguard: (ship: Ship) =>
@@ -634,7 +865,6 @@ function isCollab(m: Ship) {
   );
 }
 
-// map to "value" of sort "option" from filterData.json
 const sortFn = {
   id: (a: Ship, b: Ship) => a.id.localeCompare(b.id),
   name: (a: Ship, b: Ship) => a.names.en.localeCompare(b.names.en),
@@ -642,6 +872,58 @@ const sortFn = {
   "total-stats": (a: Ship, b: Ship) => sumStats(a) - sumStats(b),
   "construction-time": (a: Ship, b: Ship) =>
     parseConstructionTime(a) - parseConstructionTime(b),
+};
+
+const moreInfoFn = {
+  id: (a: Ship) => a.id,
+  name: (a: Ship) => "", // blank == don't show extra
+  // rarity: (a: Ship) => a.rarity,
+  "total-stats": (a: Ship) => sumStats(a).toString(),
+  "construction-time": (a: Ship) => a.construction.constructionTime,
+  "has-skin": (a: Ship) => a.skins.length,
+  // main: (a: Ship) => a.hullType,
+  // vanguard: (a: Ship) => a.hullType,
+  // dd: (a: Ship) => a.hullType,
+  // cl: (a: Ship) => a.hullType,
+  // ca: (a: Ship) => a.hullType,
+  // bb: (a: Ship) => a.hullType,
+  // cv: (a: Ship) => a.hullType,
+  // ar: (a: Ship) => a.hullType,
+  // ss: (a: Ship) => a.hullType,
+  // "misc-hull": (a: Ship) => a.hullType,
+  // bilibili: (a: Ship) => a.nationality,
+  // "royal-navy": (a: Ship) => a.nationality,
+  // "sakura-empire": (a: Ship) => a.nationality,
+  // "iron-blood": (a: Ship) => a.nationality,
+  // ssss: (a: Ship) => a.nationality,
+  // "eagle-union": (a: Ship) => a.nationality,
+  // "sardegna-empire": (a: Ship) => a.nationality,
+  // "vichya-dominion": (a: Ship) => a.nationality,
+  // "the-idolmaster": (a: Ship) => a.nationality,
+  // "dragon-empery": (a: Ship) => a.nationality,
+  // "kizuna-ai": (a: Ship) => a.nationality,
+  // meta: (a: Ship) => a.nationality,
+  // "northern-parliament": (a: Ship) => a.nationality,
+  // neptunia: (a: Ship) => a.nationality,
+  // "iris-libre": (a: Ship) => a.nationality,
+  // utawarerumono: (a: Ship) => a.nationality,
+  // "venus-vacation": (a: Ship) => a.nationality,
+  // "atelier-ryza": (a: Ship) => a.nationality,
+  // hololive: (a: Ship) => a.nationality,
+  // universal: (a: Ship) => a.nationality,
+  // tempesta: (a: Ship) => a.nationality,
+  // "misc-faction": (a: Ship) => a.nationality,
+  // elite: (a: Ship) => a.rarity,
+  // normal: (a: Ship) => a.rarity,
+  // rare: (a: Ship) => a.rarity,
+  // "super-rare": (a: Ship) => a.rarity,
+  // "ultra-rare": (a: Ship) => a.rarity,
+  // collab: (a: Ship) => a.nationality,
+  // priority: (a: Ship) => "",
+  // permanent: (a: Ship) => "",
+  // "has-skin": (a: Ship) => "",
+  // "has-oath-skin": (a: Ship) => "",
+  // "has-retrofit": (a: Ship) => "",
 };
 
 // this calculation is probably wrong compared to to ingame value
@@ -675,7 +957,5 @@ function parseConstructionTime(ship: Ship) {
 
   return num;
 }
-
-// === END IMPORT CODE
 
 export default Browser;

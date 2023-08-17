@@ -60,6 +60,7 @@ DoStuff:
         }
         debugMap.debug.illustrators[s.names.en] = meta
 
+
         // artist ?: Artist;
         // web ?: Artist;
         // pixiv ?: Artist;

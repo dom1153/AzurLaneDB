@@ -56,7 +56,7 @@
     ]
   },
   "collab": {
-    "label": "Collab",
+    "label": "Collab Faction",
     "options": [
       { "value": "bilibili", "type": "check", "label": "Bilibili" },
       { "value": "ssss", "type": "check", "label": "SSSS" },
@@ -101,9 +101,7 @@
     "options": [
       { "value": "has-skin", "type": "check", "label": "Has Skin" },
       { "value": "has-oath-skin", "type": "check", "label": "Has Oath Skin" },
-      { "value": "has-retrofit", "type": "check", "label": "Has Retrofit" },
-      { "value": "special-special", "type": "check", "label": "Special" },
-      { "value": "unique-module", "type": "check", "label": "Unique Module" }
+      { "value": "has-retrofit", "type": "check", "label": "Has Retrofit" }
     ]
   }
 }

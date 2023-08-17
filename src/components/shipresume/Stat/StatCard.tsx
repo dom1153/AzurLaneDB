@@ -27,9 +27,9 @@ export function StatCard({ header, body, icon = null }) {
         <Text bg={"black"} textColor={"white"} as="b" p={"2"}>
           {header}
         </Text>
-        <Text bg={"gray"} textColor={"white"} p={"2"}>
+        <Box bg={"gray"} textColor={"white"} p={"2"}>
           {body}
-        </Text>
+        </Box>
       </Flex>
     );
 }

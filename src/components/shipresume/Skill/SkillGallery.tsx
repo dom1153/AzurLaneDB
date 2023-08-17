@@ -7,7 +7,7 @@ export function SkillGallery({ ship }) {
 
   return (
     <>
-      <Stack>
+      <Stack gap={"16px"}>
         {ship.skills.map((skill, i) => (
           <SkillCard key={`${ship.names.en}_skill_${i}`} skill={skill} />
         ))}

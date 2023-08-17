@@ -27,7 +27,10 @@ export default function ShipCard({
       // borderRadius={"md"}
     >
       <Box position={"relative"}>
-        <Image src={ship.thumbnail} />
+        <Image
+          src={ship.thumbnail}
+          fallbackSrc="https://via.placeholder.com/102x135"
+        />
       </Box>
       <Text
         whiteSpace={"nowrap"}

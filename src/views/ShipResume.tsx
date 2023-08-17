@@ -4,13 +4,16 @@ import { useEffect, useState } from "react";
 import useAzurApi from "@/hooks/useAzurApi";
 
 import Globals from "@/hooks/useGlobals";
-import * as AttrIcons from "@/assets/asset_index.js";
+import AttrIcons from "@assets/asset_index.js";
 import { InfoTabs } from "@components/shipresume/InfoTabs";
 import { Portrait } from "@components/shipresume/Portrait/Portrait";
 import { Ship } from "@azurapi/azurapi/build/types/ship";
+import AzurApiUtils from "@/utils/azurApiUtils";
 
 export default function ShipResume() {
-  const { ship, skinId, bgUrl } = useShipResume();
+  const [useSecretaryBg, setUseSecretaryBg] = useState(false); // lazy placement
+  const [useSkinBg, setUseSkinBg] = useState(true);
+  const { ship, skinId, bgUrl } = useShipResume(useSecretaryBg);
 
   if (!ship) return <></>;
 
@@ -34,8 +37,19 @@ export default function ShipResume() {
         >
           {ship ? (
             <>
-              <Portrait ship={ship} skinId={skinId} />
-              <InfoTabs ship={ship} />
+              <Portrait
+                ship={ship}
+                skinId={skinId}
+                useSecretaryBg={useSecretaryBg}
+                useSkinBg={useSkinBg}
+              />
+              <InfoTabs
+                ship={ship}
+                useSecretaryBg={useSecretaryBg}
+                setSecretaryBg={setUseSecretaryBg}
+                useSkinBg={useSkinBg}
+                setSkinBg={setUseSkinBg}
+              />
             </>
           ) : (
             <Text>Please Wait...</Text>
@@ -46,7 +60,7 @@ export default function ShipResume() {
   );
 }
 
-function useShipResume() {
+function useShipResume(useSecretaryBg: boolean) {
   // leave the resume to handle resume things...
   // outside functions should only just set the ship
 
@@ -59,11 +73,27 @@ function useShipResume() {
     // console.log("yeah ship: ", ship);
     if (ship) {
       setSkinId(0);
+      setBgUrl(AzurApiUtils.resumeBgByRarity(ship));
       // setSkin(ship.skins[0]);
       // let { level_background } = parseShipDetails(ship);
       // setBG(level_background);
     }
   }, [ship]);
+
+  useEffect(() => {
+    if (ship) {
+      if (useSecretaryBg) {
+        // race condition... lazy fix
+        if (skinId in ship.skins) {
+          setBgUrl(ship.skins[skinId].background);
+        } else {
+          setBgUrl(AzurApiUtils.resumeBgByRarity(ship));
+        }
+      } else {
+        setBgUrl(AzurApiUtils.resumeBgByRarity(ship));
+      }
+    }
+  }, [skinId, useSecretaryBg]);
 
   // TODO: remove this code and move to portrait
   // function parseShipDetails(ship) {

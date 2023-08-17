@@ -1,6 +1,8 @@
 import Dev from "@/hooks/useDevTools";
 import { Ship } from "@azurapi/azurapi/build/types/ship";
 
+import Assets from "@assets/asset_index";
+
 type ShipRarity =
   | "Normal"
   | "Common"
@@ -64,23 +66,71 @@ export default class AzurApiUtils {
     switch (ship.rarity as ShipRarity) {
       case "Normal":
         // case "Common":
-        return "gray.100";
+        return "gray.300";
       case "Rare":
-        return "blue.100";
+        return "blue.200";
       case "Elite":
         // case "Epic":
-        return "purple.100";
+        return "purple.200";
       case "Super Rare":
       case "Priority":
-        return "yellow.100";
+        return "yellow.200";
       case "Ultra Rare":
       case "Decisive":
-        return "pink.100";
+        return "pink.200";
       default:
         if (Dev.isDev()) {
           throw new Error(`Custom: Unknown Ship Rarity: "${ship.rarity}"`);
         }
         return "white";
+    }
+  }
+
+  static resumeBgByRarity(ship: Ship) {
+    switch (ship.rarity as ShipRarity) {
+      case "Normal":
+        return Assets.detail_bg_gray;
+      case "Rare":
+        return Assets.detail_bg_blue;
+      case "Elite":
+        return Assets.detail_bg_purp;
+      case "Super Rare":
+        return Assets.detail_bg_gold;
+      case "Priority":
+        return Assets.detail_bg_gold_pr;
+      case "Ultra Rare":
+        return Assets.detail_bg_gay;
+      case "Decisive":
+        return Assets.detail_bg_gay_pr;
+      default:
+        if (Dev.isDev()) {
+          throw new Error(`Custom: Unknown Ship Rarity: "${ship.rarity}"`);
+        }
+        return Assets.detail_bg_gray;
+    }
+  }
+
+  static cardBgByRarity(ship: Ship) {
+    switch (ship.rarity as ShipRarity) {
+      case "Normal":
+        return Assets.detail_bg_gray_card;
+      case "Rare":
+        return Assets.detail_bg_blue_card;
+      case "Elite":
+        return Assets.detail_bg_purp_card;
+      case "Super Rare":
+        return Assets.detail_bg_gold_card;
+      case "Priority":
+        return Assets.detail_bg_gold_pr_card;
+      case "Ultra Rare":
+        return Assets.detail_bg_gay_card;
+      case "Decisive":
+        return Assets.detail_bg_gay_pr_card;
+      default:
+        if (Dev.isDev()) {
+          throw new Error(`Custom: Unknown Ship Rarity: "${ship.rarity}"`);
+        }
+        return Assets.detail_bg_gray;
     }
   }
 
